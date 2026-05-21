@@ -1,0 +1,10 @@
+# Fibe security disclosure
+#
+# See https://securitytxt.org for the standard.
+# If you have found a security issue, please email the contact below.
+# We will acknowledge and triage; thank you for responsible disclosure.
+
+Contact: mailto:security@fibe.gg
+Expires: 2027-05-19T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://whats.fibe.gg/.well-known/security.txt

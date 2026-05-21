@@ -1,0 +1,19 @@
+---
+title: Platform API
+description: Public /api endpoints for Marquees, props, playgrounds, playspecs, imports, launches, and compose validation.
+slug: /api/platform
+sidebar_label: Platform
+keywords: [Fibe API, Marquees, props, playgrounds, playspecs, templates]
+hide_table_of_contents: true
+---
+
+import SwaggerApiReference from '@site/src/components/SwaggerApiReference';
+import {platformSections} from '@site/src/data/apiReference';
+
+# Platform API
+
+These endpoints manage Marquees, application definitions, playground lifecycle, and template import workflows. Every operation below includes path/query parameters, request body examples, response summaries, and an interactive Swagger UI tester.
+
+Marquee operations that launch, inspect, stream, schedule, stop, destroy, or manage services require current funding. Unpaid Marquees return `MARQUEE_NOT_FUNDED` with status `402`; billing reads remain available.
+
+<SwaggerApiReference sections={platformSections} />

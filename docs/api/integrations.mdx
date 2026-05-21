@@ -1,0 +1,17 @@
+---
+title: Integrations API
+description: Public /api endpoints for API keys, secrets, job environment, repositories, installations, webhooks, and audit logs.
+slug: /api/integrations
+sidebar_label: Integrations
+keywords: [Fibe API, API keys, secrets, GitHub, Gitea, webhooks]
+hide_table_of_contents: true
+---
+
+import SwaggerApiReference from '@site/src/components/SwaggerApiReference';
+import {integrationsSections} from '@site/src/data/apiReference';
+
+# Integrations API
+
+These endpoints cover API identity, secrets, environment values, repository integrations, installation tokens, webhook endpoints, and audit logs. Every operation below includes path/query parameters, request body examples, response summaries, and an interactive Swagger UI tester.
+
+<SwaggerApiReference sections={integrationsSections} />

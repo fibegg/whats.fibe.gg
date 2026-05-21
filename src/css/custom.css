@@ -1,0 +1,179 @@
+/**
+ * Fibe — Docusaurus theme overrides.
+ *
+ * Dark-mode-only violet palette, matching the reference docs project.
+ */
+
+:root {
+  /* Brand color — violet */
+  --ifm-color-primary: #a78bfa;
+  --ifm-color-primary-dark: #8b6df5;
+  --ifm-color-primary-darker: #7c5ef3;
+  --ifm-color-primary-darkest: #6b4ce9;
+  --ifm-color-primary-light: #b9a4fb;
+  --ifm-color-primary-lighter: #c3b0fc;
+  --ifm-color-primary-lightest: #d4c6fd;
+
+  /* Background system */
+  --ifm-background-color: #0f0f14;
+  --ifm-background-surface-color: #14141c;
+  --ifm-navbar-background-color: rgba(15, 15, 20, 0.85);
+  --ifm-footer-background-color: #0a0a10;
+
+  /* Foreground */
+  --ifm-font-color-base: #e5e7eb;
+  --ifm-heading-color: #f9fafb;
+  --ifm-color-emphasis-200: #2a2a36;
+  --ifm-color-emphasis-300: #3a3a46;
+  --ifm-color-emphasis-600: #9ca3af;
+  --ifm-color-emphasis-700: #d1d5db;
+  --ifm-color-emphasis-800: #e5e7eb;
+
+  /* Code */
+  --ifm-code-background: rgba(167, 139, 250, 0.10);
+  --docusaurus-highlighted-code-line-bg: rgba(167, 139, 250, 0.15);
+
+  /* Hairlines + cards */
+  --ifm-toc-border-color: #20202a;
+  --ifm-table-stripe-background: #14141c;
+  --ifm-table-border-color: #20202a;
+  --ifm-hover-overlay: rgba(167, 139, 250, 0.08);
+
+  /* Typography */
+  --ifm-font-family-base: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ifm-font-family-monospace: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --ifm-h1-font-size: 2.25rem;
+  --ifm-h2-font-size: 1.6rem;
+  --ifm-h3-font-size: 1.25rem;
+  --ifm-line-height-base: 1.65;
+
+  /* Layout */
+  --ifm-container-width: 1280px;
+  --ifm-spacing-horizontal: 1.25rem;
+}
+
+/* Dark mode is the only mode, but be explicit anyway. */
+[data-theme='dark'] {
+  --ifm-background-color: #0f0f14;
+  --ifm-background-surface-color: #14141c;
+}
+
+/* Body */
+html, body {
+  background-color: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+}
+
+/* Make the navbar a translucent floating bar */
+.navbar {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid #20202a;
+}
+
+/* Headings */
+.markdown h1, article h1 { letter-spacing: -0.02em; }
+.markdown h2, article h2 { margin-top: 2.5rem; border-top: 1px solid #20202a; padding-top: 2rem; }
+.markdown h2:first-of-type, article h2:first-of-type { border-top: none; padding-top: 0; margin-top: 1.5rem; }
+.markdown h3, article h3 { margin-top: 2rem; }
+
+/* Lead paragraph after H1 */
+.markdown > p:first-of-type {
+  font-size: 1.1rem;
+  color: #c5c9d4;
+  line-height: 1.65;
+}
+
+/* Code blocks */
+pre, code {
+  font-family: var(--ifm-font-family-monospace);
+}
+.theme-code-block {
+  border: 1px solid #20202a;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* Admonitions (tip, caution, info, details) */
+.theme-admonition {
+  border-radius: 10px;
+  border-left-width: 4px;
+}
+
+/* Tables */
+table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+table th {
+  background-color: #14141c;
+  color: var(--ifm-heading-color);
+  border-color: #20202a !important;
+}
+table td { border-color: #20202a !important; }
+
+/* Cards */
+.card {
+  background-color: #14141c;
+  border: 1px solid #20202a;
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.card:hover {
+  border-color: rgba(167, 139, 250, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+/* Sidebar */
+.theme-doc-sidebar-container {
+  border-right: 1px solid #20202a;
+}
+.menu__link {
+  border-radius: 8px;
+}
+.menu__link--active {
+  background: rgba(167, 139, 250, 0.10);
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+/* Pagination footer */
+.pagination-nav__link {
+  border: 1px solid #20202a;
+  background: #14141c;
+  border-radius: 12px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.pagination-nav__link:hover {
+  border-color: rgba(167, 139, 250, 0.4);
+  background: #1a1a22;
+}
+
+/* Footer (when our swizzled Footer isn't active, fall back style) */
+.footer--dark {
+  background-color: var(--ifm-footer-background-color);
+  border-top: 1px solid #20202a;
+}
+
+/* Search */
+.DocSearch-Button, .navbar__search-input {
+  background-color: #14141c;
+  border: 1px solid #20202a;
+}
+
+/* Selection */
+::selection {
+  background: rgba(167, 139, 250, 0.35);
+  color: #fff;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}

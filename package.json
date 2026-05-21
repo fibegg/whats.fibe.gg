@@ -1,0 +1,59 @@
+{
+  "name": "fibe-skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "User guide and machine-readable skill library for fibe.gg — published at whats.fibe.gg",
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "sync-skills": "node scripts/sync-skills.mjs",
+    "import-seed-skills": "node scripts/import-seed-skills.mjs",
+    "build-llm-skills": "node scripts/build-llm-skills.mjs",
+    "build-brand-assets": "node scripts/build-brand-assets.mjs",
+    "refresh-skills": "npm run import-seed-skills && npm run sync-skills && npm run build-llm-skills",
+    "prestart": "node scripts/build-llm-skills.mjs",
+    "prebuild": "node scripts/build-llm-skills.mjs"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.9.2",
+    "@docusaurus/preset-classic": "3.9.2",
+    "@easyops-cn/docusaurus-search-local": "^0.55.1",
+    "@mdx-js/react": "^3.0.0",
+    "clsx": "^2.0.0",
+    "prism-react-renderer": "^2.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "swagger-ui-react": "^5.32.6"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "3.9.2",
+    "@docusaurus/types": "3.9.2",
+    "@resvg/resvg-js": "^2.6.2",
+    "satori": "^0.10.13"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
+    ]
+  },
+  "overrides": {
+    "webpack": "5.105.4"
+  },
+  "engines": {
+    "node": ">=20.0"
+  }
+}

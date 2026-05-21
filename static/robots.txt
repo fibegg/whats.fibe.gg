@@ -1,0 +1,9 @@
+# https://www.robotstxt.org
+# Allow all crawlers; sitemap is generated at build.
+
+User-agent: *
+Allow: /
+Disallow: /404
+Disallow: /404.html
+
+Sitemap: https://whats.fibe.gg/sitemap.xml

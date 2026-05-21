@@ -1,0 +1,543 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fibe.gg/schemas/fibe-compose.v1.schema.json",
+  "title": "Fibe Compose Template",
+  "description": "Fibe-specific Docker Compose and template extension schema.",
+  "x-fibe.gg": {
+    "version": "1",
+    "labels": [
+      { "key": "dockerfile", "description_key": "desc_dockerfile", "example": "./deploy/Dockerfile", "value_key": "val_path", "required_key": "req_yes", "required_code": true },
+      { "key": "repo_url", "description_key": "desc_github", "example": "https://github.com/user/repo", "value_key": "val_url", "required_key": "req_dynamic", "required_code": true },
+      { "key": "source_mount", "description_key": "desc_source_mount", "example": "/app", "value_key": "val_path", "required_key": "req_dynamic", "required_code": true },
+      { "key": "subdomain", "description_key": "desc_subdomain", "example": "api", "value_key": "val_string", "required_key": "req_exposed", "required_code": true },
+      { "key": "branch", "description_key": "desc_branch", "example": "main", "value_key": "val_string", "required_key": "req_dynamic", "required_code": true },
+      { "key": "expose", "description_key": "desc_expose", "example": "external:3000", "value_key": "val_internal_external", "required_key": "req_no", "required_code": false },
+      { "key": "start_command", "description_key": "desc_start_cmd", "example": "bundle exec rails s", "value_key": "val_string", "required_key": "req_no", "required_code": false },
+      { "key": "env_file", "description_key": "desc_env_file", "example": "env.example", "value_key": "val_path", "required_key": "req_no", "required_code": false },
+      { "key": "path_rule", "description_key": "desc_path_rule", "example": "PathPrefix(`/api`)", "value_key": "val_string", "required_key": "req_exposed", "required_code": true },
+      { "key": "production", "description_key": "desc_production", "example": "true", "value_key": "val_boolean", "required_key": "req_no", "required_code": false },
+      { "key": "zerodowntime", "description_key": "desc_zerodowntime", "example": "true", "value_key": "val_boolean", "required_key": "req_no", "required_code": false },
+      { "key": "build_target", "description_key": "desc_build_target", "example": "production", "value_key": "val_string", "required_key": "req_no", "required_code": false },
+      { "key": "build_args", "description_key": "desc_build_args", "example": "KEY=val,K2=v2", "value_key": "val_list", "required_key": "req_no", "required_code": false },
+      { "key": "healthcheck_path", "description_key": "desc_healthcheck_path", "example": "/up", "value_key": "val_path", "required_key": "req_zerodowntime", "required_code": true },
+      { "key": "healthcheck_interval", "description_key": "desc_healthcheck_interval", "example": "10s", "value_key": "val_duration", "required_key": "req_zerodowntime", "required_code": true },
+      { "key": "healthcheck_timeout", "description_key": "desc_healthcheck_timeout", "example": "5s", "value_key": "val_duration", "required_key": "req_zerodowntime", "required_code": true },
+      { "key": "healthcheck_retries", "description_key": "desc_healthcheck_retries", "example": "3", "value_key": "val_integer", "required_key": "req_zerodowntime", "required_code": true },
+      { "key": "healthcheck_start_period", "description_key": "desc_healthcheck_start_period", "example": "30s", "value_key": "val_duration", "required_key": "req_zerodowntime", "required_code": true }
+    ]
+  },
+  "type": "object",
+  "required": ["services"],
+  "properties": {
+    "services": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/service"
+      }
+    },
+    "x-fibe.gg": {
+      "$ref": "#/$defs/fibeNamespace"
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "service": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "$ref": "#/$defs/labels"
+        }
+      },
+      "additionalProperties": true
+    },
+    "labels": {
+      "type": ["object", "array"],
+      "if": {
+        "type": "array"
+      },
+      "then": {
+        "$ref": "#/$defs/labelsArray"
+      },
+      "else": {
+        "$ref": "#/$defs/labelsObject"
+      }
+    },
+    "labelsObject": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/labelName"
+      },
+      "properties": {
+        "fibe.gg/repo_url": {
+          "$ref": "#/$defs/optionalString"
+        },
+        "fibe.gg/source_mount": {
+          "$ref": "#/$defs/pathLabel"
+        },
+        "fibe.gg/job_watch": {
+          "$ref": "#/$defs/booleanLabel"
+        },
+        "fibe.gg/dockerfile": {
+          "$ref": "#/$defs/pathLabel"
+        },
+        "fibe.gg/env_file": {
+          "$ref": "#/$defs/pathLabel"
+        },
+        "fibe.gg/start_command": {
+          "$ref": "#/$defs/optionalString"
+        },
+        "fibe.gg/expose": {
+          "$ref": "#/$defs/exposeLabel"
+        },
+        "fibe.gg/production": {
+          "$ref": "#/$defs/booleanLabel"
+        },
+        "fibe.gg/zerodowntime": {
+          "$ref": "#/$defs/booleanLabel"
+        },
+        "fibe.gg/branch": {
+          "$ref": "#/$defs/optionalString"
+        },
+        "fibe.gg/subdomain": {
+          "$ref": "#/$defs/subdomainLabel"
+        },
+        "fibe.gg/path_rule": {
+          "$ref": "#/$defs/pathRuleLabel"
+        },
+        "fibe.gg/build_target": {
+          "$ref": "#/$defs/optionalString"
+        },
+        "fibe.gg/build_args": {
+          "$ref": "#/$defs/optionalString"
+        },
+        "fibe.gg/healthcheck_path": {
+          "$ref": "#/$defs/httpPathLabel"
+        },
+        "fibe.gg/healthcheck_interval": {
+          "$ref": "#/$defs/durationLabel"
+        },
+        "fibe.gg/healthcheck_timeout": {
+          "$ref": "#/$defs/durationLabel"
+        },
+        "fibe.gg/healthcheck_retries": {
+          "$ref": "#/$defs/positiveIntegerLabel"
+        },
+        "fibe.gg/healthcheck_start_period": {
+          "$ref": "#/$defs/durationLabel"
+        }
+      },
+      "additionalProperties": true
+    },
+    "labelsArray": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/fibeLabelString"
+          },
+          {
+            "$ref": "#/$defs/labelsObject"
+          },
+          {
+            "type": "string",
+            "not": {
+              "pattern": "^fibe\\.gg/"
+            }
+          }
+        ]
+      }
+    },
+    "labelName": {
+      "anyOf": [
+        {
+          "enum": [
+            "fibe.gg/repo_url",
+            "fibe.gg/source_mount",
+            "fibe.gg/job_watch",
+            "fibe.gg/dockerfile",
+            "fibe.gg/env_file",
+            "fibe.gg/start_command",
+            "fibe.gg/expose",
+            "fibe.gg/production",
+            "fibe.gg/zerodowntime",
+            "fibe.gg/branch",
+            "fibe.gg/subdomain",
+            "fibe.gg/path_rule",
+            "fibe.gg/build_target",
+            "fibe.gg/build_args",
+            "fibe.gg/healthcheck_path",
+            "fibe.gg/healthcheck_interval",
+            "fibe.gg/healthcheck_timeout",
+            "fibe.gg/healthcheck_retries",
+            "fibe.gg/healthcheck_start_period"
+          ]
+        },
+        {
+          "not": {
+            "pattern": "^fibe\\.gg/"
+          }
+        }
+      ]
+    },
+    "fibeLabelString": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/templatedFibeLabelString"
+        },
+        {
+          "pattern": "^fibe\\.gg/(?:repo_url|start_command|branch|build_target|build_args)(?:=[^\\r\\n]*)?$"
+        },
+        {
+          "pattern": "^fibe\\.gg/(?:source_mount|dockerfile|env_file)(?:=(?:|[A-Za-z0-9_./-]+))?$"
+        },
+        {
+          "pattern": "^fibe\\.gg/(?:job_watch|production|zerodowntime)(?:=(?:|true|false))?$"
+        },
+        {
+          "pattern": "^fibe\\.gg/expose(?:=(?:|(?:(?:internal|external):)?[0-9]+))?$"
+        },
+        {
+          "pattern": "^fibe\\.gg/subdomain(?:=(?:|@|[a-z0-9](?:[a-z0-9-]*[a-z0-9])?))?$"
+        },
+        {
+          "allOf": [
+            {
+              "pattern": "^fibe\\.gg/path_rule(?:=(?:$|.*\\b(?:Path|PathPrefix|PathRegexp)\\s*\\())?$"
+            },
+            {
+              "not": {
+                "pattern": "\\b(?:Host|HostRegexp|HostSNI|HostSNIRegexp|Headers|HeadersRegexp|Method|Query|ClientIP)\\s*\\("
+              }
+            }
+          ]
+        },
+        {
+          "pattern": "^fibe\\.gg/healthcheck_path(?:=(?:|/[^\\r\\n]*))?$"
+        },
+        {
+          "pattern": "^fibe\\.gg/(?:healthcheck_interval|healthcheck_timeout|healthcheck_start_period)(?:=(?:|[0-9]+(?:ms|s|m)))?$"
+        },
+        {
+          "pattern": "^fibe\\.gg/healthcheck_retries(?:=(?:|[1-9][0-9]*))?$"
+        }
+      ]
+    },
+    "templatedFibeLabelString": {
+      "type": "string",
+      "pattern": "^fibe\\.gg/(?:repo_url|source_mount|job_watch|dockerfile|env_file|start_command|expose|production|zerodowntime|branch|subdomain|path_rule|build_target|build_args|healthcheck_path|healthcheck_interval|healthcheck_timeout|healthcheck_retries|healthcheck_start_period)(?:=[^\\r\\n]*\\$\\$var__[A-Za-z0-9_]+[^\\r\\n]*)$"
+    },
+    "templatedString": {
+      "type": "string",
+      "pattern": "\\$\\$var__[A-Za-z0-9_]+"
+    },
+    "templateVariableReference": {
+      "type": "string",
+      "pattern": "^\\$\\$var__[A-Za-z0-9_]+$"
+    },
+    "pathLabel": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/templatedString"
+        },
+        {
+          "type": "string",
+          "pattern": "^(?:|[A-Za-z0-9_./-]+)$"
+        }
+      ]
+    },
+    "optionalString": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "booleanLabel": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/$defs/templatedString"
+        },
+        {
+          "type": "string",
+          "pattern": "^(?:|true|false)$"
+        }
+      ]
+    },
+    "exposeLabel": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        {
+          "$ref": "#/$defs/templatedString"
+        },
+        {
+          "type": "string",
+          "pattern": "^(?:|(?:(?:internal|external):)?[0-9]+)$"
+        }
+      ]
+    },
+    "subdomainLabel": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^(?:|@|[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)$"
+        },
+        {
+          "$ref": "#/$defs/templatedString"
+        },
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "pathRuleLabel": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": ""
+        },
+        {
+          "$ref": "#/$defs/templatedString"
+        },
+        {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "\\b(?:Path|PathPrefix|PathRegexp)\\s*\\("
+            },
+            {
+              "not": {
+                "pattern": "\\b(?:Host|HostRegexp|HostSNI|HostSNIRegexp|Headers|HeadersRegexp|Method|Query|ClientIP)\\s*\\("
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "httpPathLabel": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/templatedString"
+        },
+        {
+          "type": "string",
+          "pattern": "^(?:|/[^\\r\\n]*)$"
+        }
+      ]
+    },
+    "durationLabel": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/templatedString"
+        },
+        {
+          "type": "string",
+          "pattern": "^(?:|[0-9]+(?:ms|s|m))$"
+        }
+      ]
+    },
+    "positiveIntegerLabel": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "$ref": "#/$defs/templatedString"
+        },
+        {
+          "type": "string",
+          "pattern": "^(?:|[1-9][0-9]*)$"
+        }
+      ]
+    },
+    "fibeNamespace": {
+      "type": "object",
+      "properties": {
+        "variables": {
+          "$ref": "#/$defs/templateVariables"
+        },
+        "metadata": {
+          "$ref": "#/$defs/templateMetadata"
+        },
+        "job_mode": {
+          "type": "boolean"
+        },
+        "muti_config": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "schedule_config": {
+          "$ref": "#/$defs/scheduleConfig"
+        },
+        "trigger_config": {
+          "$ref": "#/$defs/triggerConfig"
+        }
+      },
+      "additionalProperties": true
+    },
+    "templateVariables": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9_]+$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/templateVariable"
+      }
+    },
+    "templateVariable": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "random": {
+          "type": "boolean"
+        },
+        "default": {
+          "type": ["string", "number", "integer", "boolean", "null"]
+        },
+        "validation": {
+          "type": "string",
+          "pattern": "^(?:|/.*/)$"
+        },
+        "path": {
+          "$ref": "#/$defs/templatePath"
+        },
+        "paths": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/templatePath"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/templatePath"
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "templatePath": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_./\\[\\]-]+$"
+    },
+    "templateMetadata": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "source_defaults": {
+          "type": "boolean"
+        },
+        "job_mode": {
+          "type": "boolean"
+        },
+        "muti_config": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "schedule_config": {
+          "$ref": "#/$defs/scheduleConfig"
+        },
+        "trigger_config": {
+          "$ref": "#/$defs/triggerConfig"
+        }
+      },
+      "additionalProperties": true
+    },
+    "scheduleConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "cron": {
+          "type": "string"
+        },
+        "marquee_id": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            }
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "triggerConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "event_type": {
+          "type": "string",
+          "enum": ["push", "pull_request"]
+        },
+        "repo_url": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "prop_id": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            }
+          ]
+        },
+        "marquee_id": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            }
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

@@ -1,0 +1,19 @@
+---
+title: Agents and knowledge API
+description: Public /api endpoints for agents, conversations, artefacts, feedback, events, and memory.
+slug: /api/agents-and-knowledge
+sidebar_label: Agents and knowledge
+keywords: [Fibe API, agents, conversations, memory, artefacts]
+hide_table_of_contents: true
+---
+
+import SwaggerApiReference from '@site/src/components/SwaggerApiReference';
+import {agentsSections} from '@site/src/data/apiReference';
+
+# Agents and knowledge API
+
+These endpoints manage agent lifecycle, conversation synchronization, generated artefacts, feedback, event monitoring, conversations, and memory. Every operation below includes path/query parameters, request body examples, response summaries, and an interactive Swagger UI tester.
+
+Agent operations that use a Marquee require that Marquee to be funded. Unpaid Marquees return `MARQUEE_NOT_FUNDED`; cached reads remain available.
+
+<SwaggerApiReference sections={agentsSections} />

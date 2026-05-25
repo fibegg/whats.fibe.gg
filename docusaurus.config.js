@@ -125,7 +125,12 @@ const config = {
       },
       navbar: {
         title: 'Fibe',
-        // No logo image — title text alone, linking to home.
+        logo: {
+          alt: 'Fibe',
+          src: 'img/fibe-icon.png',
+          width: 28,
+          height: 28,
+        },
         items: [
           {href: 'https://fibe.gg', label: 'fibe.gg', position: 'right'},
           {href: 'https://github.com/fibegg/fibe-skills', label: 'GitHub', position: 'right'},

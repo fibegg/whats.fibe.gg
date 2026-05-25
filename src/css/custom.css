@@ -64,11 +64,24 @@ html, body {
   color: var(--ifm-font-color-base);
 }
 
-/* Make the navbar a translucent floating bar */
+/* Make the navbar a translucent floating bar.
+   Apply backdrop-filter only when the mobile drawer is closed — backdrop-filter
+   creates a containing block for descendants with position: fixed, which would
+   trap the mobile drawer (.navbar-sidebar) inside the navbar's 60-px box. */
 .navbar {
+  border-bottom: 1px solid #20202a;
+}
+.navbar:not(.navbar-sidebar--show) {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid #20202a;
+}
+
+/* Phoenix nav mark — rounded square, subtle glow. */
+.navbar__logo img {
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 1px rgba(167, 139, 250, 0.35),
+    0 6px 18px rgba(123, 93, 243, 0.35);
 }
 
 /* Headings */
@@ -99,7 +112,9 @@ pre, code {
   border-left-width: 4px;
 }
 
-/* Tables */
+/* Tables — keep table semantics, but allow horizontal scroll
+   inside the cell on narrow screens so wide tables (3+ columns
+   with long content) don't break the page layout. */
 table {
   display: table;
   width: 100%;
@@ -112,6 +127,35 @@ table th {
   border-color: #20202a !important;
 }
 table td { border-color: #20202a !important; }
+
+/* Mobile: tables become block-scrollable. The table itself still uses
+   its natural width but scrolls inside its own container instead of
+   pushing the page wider. */
+@media (max-width: 768px) {
+  .markdown table,
+  article table {
+    display: block;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+  .markdown table tbody,
+  article table tbody {
+    /* Keep cells from collapsing to one column when the table becomes block. */
+    display: table;
+    width: 100%;
+    min-width: max-content;
+  }
+}
+
+/* Mobile: keep code blocks from pushing the page wider. */
+@media (max-width: 768px) {
+  .theme-code-block,
+  pre {
+    max-width: 100%;
+  }
+}
 
 /* Cards */
 .card {

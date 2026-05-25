@@ -26,7 +26,9 @@
 
 .card {
   position: relative;
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
   padding: 1.25rem 1.4rem 1.5rem;
   background-color: #14141c;
   border: 1px solid #20202a;
@@ -47,6 +49,7 @@
   justify-content: center;
   width: 44px;
   height: 44px;
+  flex-shrink: 0;
   border-radius: 10px;
   background: rgba(167, 139, 250, 0.10);
   border: 1px solid rgba(167, 139, 250, 0.25);
@@ -70,6 +73,22 @@
   font-size: 0.92rem;
   line-height: 1.55;
   color: #c5c9d4;
+}
+
+/* Mobile: icon and title sit on the same row, blurb wraps below across the full width. */
+@media (max-width: 640px) {
+  .card {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "icon title"
+      "blurb blurb";
+    align-items: center;
+    column-gap: 0.85rem;
+    row-gap: 0.6rem;
+  }
+  .iconBox { grid-area: icon; margin-bottom: 0; }
+  .title { grid-area: title; margin: 0; }
+  .blurb { grid-area: blurb; }
 }
 .arrow {
   position: absolute;

@@ -1,15 +1,63 @@
 .footer {
   background-color: #0a0a10;
   border-top: 1px solid #20202a;
-  padding: 2rem 0 2rem;
+  padding: 2.5rem 0 2rem;
 }
 
 .inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.9rem;
+  display: grid;
+  gap: 1.5rem;
+  justify-items: center;
   text-align: center;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #f9fafb;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+.brandMark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  object-fit: cover;
+  box-shadow:
+    0 0 0 1px rgba(167, 139, 250, 0.35),
+    0 6px 18px rgba(123, 93, 243, 0.25);
+}
+.brandText { color: #f9fafb; }
+
+.family {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.1rem 0.15rem;
+  font-size: 0.86rem;
+  color: #c5c9d4;
+}
+.familyLink {
+  color: inherit !important;
+  text-decoration: none !important;
+  padding: 0.15rem 0.25rem;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.familyLink:hover {
+  color: #f9fafb !important;
+  text-decoration: underline !important;
+}
+.familyLink[aria-current="page"] {
+  color: #f9fafb !important;
+  font-weight: 600;
+}
+.familySep {
+  color: #7a7a8a;
+  margin: 0 0.25rem;
 }
 
 .socialRow {
@@ -37,6 +85,20 @@
   background-color: rgba(167, 139, 250, 0.10);
   transform: translateY(-1px);
 }
+
+.support {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(0, 87, 183, 0.45);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(0, 87, 184, 0.15) 0%, rgba(255, 221, 0, 0.08) 100%);
+  color: #c5c9d4;
+}
+.flag { font-size: 1.05em; }
+.supportText strong { color: #f9fafb; margin-right: 0.4rem; }
+.supportSub { color: #c5c9d4; font-size: 0.92rem; }
 
 .legalRow {
   font-size: 0.85rem;

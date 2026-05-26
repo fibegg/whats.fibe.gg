@@ -52,9 +52,9 @@ If the service has a `build:` block, you have a dynamic service. Add `fibe.gg/re
 
 → Load [recipe-build-to-repo-url](recipe-build-to-repo-url.md) and [recipe-build-args-and-target](recipe-build-args-and-target.md).
 
-### Step 3 — Replace `ports:` with `fibe.gg/expose`
+### Step 3 — Replace `ports:` with `fibe.gg/port`
 
-User-facing HTTP is **always** `fibe.gg/expose`. Never use Compose `ports:` for public traffic — Traefik handles routing.
+User-facing HTTP is **always** `fibe.gg/port`. Never use Compose `ports:` for public traffic — Traefik handles routing.
 
 → Load [recipe-ports-to-expose](recipe-ports-to-expose.md).
 
@@ -119,7 +119,8 @@ services:
   web:
     image: nginx:alpine
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
 ```
 
 That gives you a public HTTP route under the Marquee root domain at subdomain `web` (the default — service name). Add `fibe.gg/subdomain` to override.
@@ -128,8 +129,8 @@ That gives you a public HTTP route under the Marquee root domain at subdomain `w
 
 | Intent | Add these labels |
 |---|---|
-| Public HTTP from prebuilt image | `fibe.gg/expose: external:PORT` |
-| Internal-only (basic auth) HTTP | `fibe.gg/expose: internal:PORT` |
+| Public HTTP from prebuilt image | `fibe.gg/port: PORT`<br />`fibe.gg/visibility: external` |
+| Internal-only (basic auth) HTTP | `fibe.gg/port: PORT`<br />`fibe.gg/visibility: internal` |
 | Build from my repo | `fibe.gg/repo_url`, optional `fibe.gg/dockerfile`, `fibe.gg/branch` |
 | Live-edit dev mode | `fibe.gg/repo_url`, `fibe.gg/source_mount: /app`, `fibe.gg/start_command`, `fibe.gg/production: "false"` |
 | Zero-downtime rollouts | `fibe.gg/zerodowntime: "true"` on an exposed HTTP service, with optional `fibe.gg/healthcheck_*` overrides when defaults do not match the app; forbids `ports:`/`container_name` |

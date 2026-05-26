@@ -7,7 +7,7 @@ description: Use as the definitive reference for every supported `fibe.gg/*` Doc
 
 The label prefix is `fibe.gg/` (configurable to a different prefix in self-hosted setups via `Compose.configuration.label_prefix`, but `fibe.gg/` is what every public template uses). Unknown `fibe.gg/*` labels FAIL parsing. Non-`fibe.gg/` labels pass through to Docker.
 
-## All 19 supported labels
+## All 20 supported labels
 
 | Label | Value | Default | Required when |
 |---|---|---|---|
@@ -17,7 +17,8 @@ The label prefix is `fibe.gg/` (configurable to a different prefix in self-hoste
 | `fibe.gg/branch` | Git ref name | repo default branch | pin to non-default branch |
 | `fibe.gg/start_command` | shell command string | image `CMD` | overriding runtime command |
 | `fibe.gg/env_file` | path relative to repo root | `.env.example` | non-default env example |
-| `fibe.gg/expose` | `internal:PORT`, `external:PORT`, or bare port | not exposed | service must serve HTTP to humans |
+| `fibe.gg/port` | port number (`1..65535`) or `$$var__NAME` | not exposed | service must serve HTTP to humans |
+| `fibe.gg/visibility` | `external`, `internal`, or `$$var__NAME` | `external` | service has `fibe.gg/port` |
 | `fibe.gg/subdomain` | `@` (root), or `^[a-z0-9]([a-z0-9-]*[a-z0-9])?$` | service name | non-default routing host |
 | `fibe.gg/path_rule` | Traefik path matcher (`Path`, `PathPrefix`, `PathRegexp` only) | `/` | multiple services share one subdomain |
 | `fibe.gg/production` | `true` / `false` (string or boolean) | unset | distinguish built-image vs mounted-source dev |
@@ -47,13 +48,19 @@ labels:
 
 Internally only the literal string `"true"` is treated as true (`TRUTHY_VALUES = ["true"]`). Anything else parses to false.
 
-### `fibe.gg/expose`
+### `fibe.gg/port`
 
-Schema allows the empty string and `(internal|external):PORT` or just `PORT`. Runtime requires `1 ≤ PORT ≤ 65535`.
+Schema allows the empty string, a numeric string/integer, or `$$var__NAME`. Runtime requires `1 ≤ PORT ≤ 65535`.
 
-- `external:3000` — public HTTPS route via Traefik.
-- `internal:3000` — internal route with Basic Auth middleware per Marquee.
-- `3000` (bare) — accepted as internal/default.
+- `3000` — route traffic to container port 3000.
+- `$$var__PORT` — use the launch-time variable as the routed container port.
+
+### `fibe.gg/visibility`
+
+Schema allows the empty string, `external`, `internal`, or `$$var__NAME`. Runtime defaults omitted visibility to `external`.
+
+- `external` — public HTTPS route via Traefik.
+- `internal` — internal route with Basic Auth middleware per Marquee.
 
 ### `fibe.gg/subdomain`
 
@@ -71,7 +78,8 @@ Examples:
 services:
   api:
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       # valid:
       fibe.gg/subdomain: api
       fibe.gg/subdomain: "@"
@@ -128,7 +136,8 @@ Must start with `https://` and resolve through `Configuration::validate_repo_url
 services:
   web:
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: api
       traefik.enable: "true"   # non-fibe labels are pass-through
 ```
@@ -152,7 +161,7 @@ These are enforced by the **runtime parser**, not the JSON Schema:
 - Compose `build:` requires `fibe.gg/repo_url`.
 - `fibe.gg/source_mount` requires `fibe.gg/repo_url`.
 - `fibe.gg/zerodowntime: "true"` requires:
-  - `fibe.gg/expose` set,
+  - `fibe.gg/port` set,
   - service does **not** define Compose `ports:`,
   - service does **not** define `container_name`.
 - `fibe.gg/healthcheck_*` labels are optional zero-downtime overrides. When they are omitted, Fibe generates rollout healthcheck settings from defaults.
@@ -164,7 +173,8 @@ Any of the labels above may contain `$$var__NAME` inline. The schema's `template
 
 ```yaml
 labels:
-  fibe.gg/expose: external:$$var__PORT
+  fibe.gg/port: $$var__PORT
+  fibe.gg/visibility: external
   fibe.gg/subdomain: $$var__SUBDOMAIN
   fibe.gg/repo_url: $$var__REPO_URL
 ```

@@ -41,7 +41,7 @@ An agent can explain or guide a user through:
 An agent can convert Docker Compose into Fibe templates that:
 
 - Preserve valid Docker Compose structure while adding Fibe behavior.
-- Use `fibe.gg/expose` for public or internal HTTP routing.
+- Use `fibe.gg/port` for public or internal HTTP routing.
 - Use `fibe.gg/subdomain` and `fibe.gg/path_rule` for host and path routing.
 - Convert `ports:` to Fibe-managed routing where appropriate.
 - Preserve internal-only services such as databases, caches, queues, and utility containers.

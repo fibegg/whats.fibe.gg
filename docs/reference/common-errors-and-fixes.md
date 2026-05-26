@@ -50,17 +50,17 @@ Compose `build:` requires `fibe.gg/repo_url`.
 
 **Fix:** Either add `fibe.gg/repo_url`, or remove `fibe.gg/source_mount`. See [recipe-source-mount](recipe-source-mount.md).
 
-### `Service '<n>': zerodowntime services must have 'fibe.gg/expose' set`
+### `Service '<n>': zerodowntime services must have 'fibe.gg/port' set`
 
 Zero-downtime requires an exposed HTTP service.
 
-**Fix:** Add `fibe.gg/expose: external:PORT` (or `internal:PORT`). See [decide-zero-downtime](decide-zero-downtime.md).
+**Fix:** Add `fibe.gg/port: PORT`. Add `fibe.gg/visibility: internal` only for Basic Auth protected routes. See [decide-zero-downtime](decide-zero-downtime.md).
 
 ### `Service '<n>': zerodowntime services cannot have 'ports'`
 
 Compose `ports:` is incompatible with rolling updates.
 
-**Fix:** Remove `ports:`. The service is reachable via `fibe.gg/expose`. See [recipe-ports-to-expose](recipe-ports-to-expose.md), [recipe-strip-incompatible-keys](recipe-strip-incompatible-keys.md).
+**Fix:** Remove `ports:`. The service is reachable via `fibe.gg/port`. See [recipe-ports-to-expose](recipe-ports-to-expose.md), [recipe-strip-incompatible-keys](recipe-strip-incompatible-keys.md).
 
 ### `Service '<n>': zerodowntime services cannot have 'container_name'`
 
@@ -76,9 +76,9 @@ The URL isn't HTTPS / isn't a supported provider.
 
 ### `Service '<n>': invalid exposure visibility '<v>' — must be 'internal' or 'external'`
 
-Only `internal:PORT` / `external:PORT` / bare `PORT`.
+Only lowercase `internal` or `external`.
 
-**Fix:** Use lowercase `internal` or `external`. `External:3000` fails — case-sensitive. See [recipe-ports-to-expose](recipe-ports-to-expose.md).
+**Fix:** Use lowercase `internal` or `external`. `External` fails — case-sensitive. See [recipe-ports-to-expose](recipe-ports-to-expose.md).
 
 ### `Service '<n>': invalid exposure port '<v>' — must be a number between 1 and 65535`
 

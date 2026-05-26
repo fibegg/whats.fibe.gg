@@ -31,8 +31,8 @@ See [`decide-static-vs-dynamic`](/reference/decide-static-vs-dynamic/).
 
 | Service | Reachable? |
 | --- | --- |
-| Public web app | `external:PORT` |
-| Internal admin / metrics | `internal:PORT` (Basic Auth) |
+| Public web app | `fibe.gg/visibility: external` with `fibe.gg/port: PORT` |
+| Internal admin / metrics | `fibe.gg/visibility: internal` with `fibe.gg/port: PORT` (Basic Auth) |
 | Background worker | not exposed |
 | Database / cache / queue | not exposed |
 | Auxiliary build-time service | not exposed |

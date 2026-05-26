@@ -70,7 +70,7 @@ fibe.gg/healthcheck_start_period: 120s
 The path must:
 
 - Return `2xx` ONLY when the replica is ready to serve real traffic.
-- Be reachable on the same `fibe.gg/expose` port.
+- Be reachable on the same `fibe.gg/port` port.
 - Be cheap (Traefik hits it on every interval × every replica).
 - Not require Basic Auth even on `internal:` services.
 

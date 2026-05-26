@@ -166,7 +166,8 @@ services:
   web:
     labels:
       <<: *fibe-app-labels
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
   jobs:
     labels:

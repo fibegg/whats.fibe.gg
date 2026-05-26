@@ -19,7 +19,7 @@ These cause validation or runtime errors and must be removed or rewritten:
 
 ### Always replace `ports:`
 
-Rewrite `ports:` to `fibe.gg/expose` for user-facing HTTP services, or delete it for service-to-service-only traffic (DB, queue, cache). Manual non-80/443 host ports are warnings in current validation, but they make templates less portable and break zero-downtime. See [recipe-ports-to-expose](recipe-ports-to-expose.md).
+Rewrite `ports:` to `fibe.gg/port` for user-facing HTTP services, or delete it for service-to-service-only traffic (DB, queue, cache). Manual non-80/443 host ports are warnings in current validation, but they make templates less portable and break zero-downtime. See [recipe-ports-to-expose](recipe-ports-to-expose.md).
 
 ### Always remove `container_name:`
 
@@ -160,7 +160,8 @@ services:
   app:
     labels:
       fibe.gg/repo_url: https://github.com/owner/app
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
     volumes:
       - app_logs:/app/logs
     environment:

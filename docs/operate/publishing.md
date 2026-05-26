@@ -32,10 +32,10 @@ The goal is to make sure that someone clicking your Template in the Bazaar gets 
 - No unrecognized `fibe.gg/` labels.
 - Boolean labels written as quoted `"true"` / `"false"`.
 - Exposure values are lowercase; ports in valid range or supplied via a variable.
-- Public HTTP goes through `fibe.gg/expose`, never Compose `ports:`.
+- Public HTTP goes through `fibe.gg/port`, never Compose `ports:`.
 - Custom subdomain only when the default isn't right.
 - Path rules use only path matchers — no host, header, method, query, or client-IP rules.
-- Internal-only services use `internal:PORT` for Basic Auth protection.
+- Internal-only services use `fibe.gg/visibility: internal` with `fibe.gg/port: PORT` for Basic Auth protection.
 
 ## Rolling updates (only if eligible)
 
@@ -75,7 +75,7 @@ The goal is to make sure that someone clicking your Template in the Bazaar gets 
 ## Security rejects
 
 :::caution Don't publish a template that…
-- Publicly exposes admin consoles without authentication. Use `internal:PORT` if there's no built-in auth.
+- Publicly exposes admin consoles without authentication. Use `fibe.gg/visibility: internal` with `fibe.gg/port: PORT` if there's no built-in auth.
 - Hardcodes real secrets, customer-specific paths, or private URLs.
 - Mounts the Docker socket.
 - Runs privileged containers without a documented reason.
@@ -85,7 +85,7 @@ The goal is to make sure that someone clicking your Template in the Bazaar gets 
 
 ## Frequent slip-ups
 
-- Compose `ports:` left in instead of `fibe.gg/expose`.
+- Compose `ports:` left in instead of `fibe.gg/port`.
 - An uppercase `External` in the exposure value.
 - `yes` / `on` / `1` used in place of `"true"`.
 - A host matcher inside a path rule.

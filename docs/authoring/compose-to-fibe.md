@@ -64,7 +64,7 @@ See [`recipe-build-to-repo-url`](/reference/recipe-build-to-repo-url/).
 
 ### 3 — Replace `ports:`
 
-For services that need a URL, use `fibe.gg/expose` instead of Compose port publishing. Fibe handles HTTPS routing and gives you a clean URL.
+For services that need a URL, use `fibe.gg/port` instead of Compose port publishing. Fibe handles HTTPS routing and gives you a clean URL.
 
 ```yaml
 # Before
@@ -72,7 +72,8 @@ ports: ["3000:3000"]
 
 # After
 labels:
-  fibe.gg/expose: external:3000      # → https://<service>.<root-domain>
+  fibe.gg/port: 3000      # → https://<service>.<root-domain>
+  fibe.gg/visibility: external
 ```
 
 Use `internal:` instead of `external:` for services that should be Basic-Auth-gated (admin consoles, dashboards).
@@ -162,8 +163,8 @@ A typical iteration loop:
 
 | Intent | Add these labels / settings |
 | --- | --- |
-| Public HTTP from a prebuilt image | `fibe.gg/expose: external:PORT` |
-| Internal-only HTTP behind Basic Auth | `fibe.gg/expose: internal:PORT` |
+| Public HTTP from a prebuilt image | `fibe.gg/port: PORT`<br />`fibe.gg/visibility: external` |
+| Internal-only HTTP behind Basic Auth | `fibe.gg/port: PORT`<br />`fibe.gg/visibility: internal` |
 | Build from your repository | `fibe.gg/repo_url` (optionally `fibe.gg/dockerfile`, `fibe.gg/branch`) |
 | Live-edit dev mode | `fibe.gg/repo_url` + `fibe.gg/source_mount: /app` + `fibe.gg/start_command` + `fibe.gg/production: "false"` |
 | Zero-downtime rollouts | `fibe.gg/zerodowntime: "true"` + the `fibe.gg/healthcheck_*` labels |
@@ -187,7 +188,8 @@ services:
   web:
     image: nginx:alpine
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
     volumes:
       - ./html:/usr/share/nginx/html:ro    # mount stays; Marquee preserves it
 ```

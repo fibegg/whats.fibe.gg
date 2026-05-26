@@ -55,7 +55,7 @@ volumes:
 |---|---|
 | Rails app source | Dynamic via `fibe.gg/repo_url` + Dockerfile build |
 | Migrations | One-shot `setup` service that runs `bin/setup` / `bin/rails db:prepare`, exits |
-| Web | Public `external:3000`, optionally zero-downtime with `/up` healthcheck |
+| Web | Public route on `fibe.gg/port: 3000`, optionally zero-downtime with `/up` healthcheck |
 | Jobs | No `expose`; `fibe.gg/start_command: bin/jobs` (or `bundle exec sidekiq`) |
 | Postgres | Static `postgres:17`; named volume; random password |
 | Redis | Static `redis:8-alpine`; named volume |
@@ -150,7 +150,8 @@ services:
       fibe.gg/dockerfile: Dockerfile
       fibe.gg/source_mount: "/rails"
       fibe.gg/start_command: bin/rails server -b 0.0.0.0
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: ${SUBDOMAIN:-app}
       fibe.gg/production: "true"
       fibe.gg/zerodowntime: "true"
@@ -254,7 +255,7 @@ services:
       fibe.gg/branch: ${BRANCH:-main}
       fibe.gg/dockerfile: Dockerfile
       fibe.gg/start_command: bin/rails server -b 0.0.0.0
-      # no fibe.gg/expose — private to AnyCable
+      # no fibe.gg/port — private to AnyCable
 
   ws:                                # anycable-go front
     image: anycable/anycable-go:1.6
@@ -270,7 +271,8 @@ services:
       web-for-anycable:
         condition: service_healthy
     labels:
-      fibe.gg/expose: external:8081
+      fibe.gg/port: 8081
+      fibe.gg/visibility: external
       fibe.gg/subdomain: ${SUBDOMAIN:-app}       # SAME subdomain as web
       fibe.gg/path_rule: Path(`/cable`) || Path(`/health`)
 ```

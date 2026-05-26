@@ -102,7 +102,8 @@ services:
     image: ghcr.io/owner/repo:latest      # base image while waiting for build, OK
     labels:
       fibe.gg/repo_url: https://github.com/owner/repo
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
   db:                                     # static
     image: postgres:17
     volumes:

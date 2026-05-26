@@ -25,7 +25,8 @@ services:
         condition: service_healthy
     restart: unless-stopped
     labels:
-      fibe.gg/expose: external:<APP_PORT>
+      fibe.gg/port: <APP_PORT>
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
 
   db:

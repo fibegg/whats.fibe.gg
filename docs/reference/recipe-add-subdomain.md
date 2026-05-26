@@ -30,22 +30,26 @@ Regex (schema): `^(?:|@|[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)$`. Single-character lab
 services:
   web:
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       # no subdomain → web.<root>
 
   api:
     labels:
-      fibe.gg/expose: external:8080
+      fibe.gg/port: 8080
+      fibe.gg/visibility: external
       fibe.gg/subdomain: api               # api.<root>
 
   docs:
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
       fibe.gg/subdomain: documentation     # documentation.<root>
 
   front_door:
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: "@"               # the root itself
 ```
 
@@ -57,7 +61,8 @@ Parameterize the subdomain at launch:
 services:
   web:
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
 
 x-fibe.gg:
@@ -79,7 +84,8 @@ Use `@` for the **front door** — the service users hit by typing the Marquee r
 services:
   web:
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: "@"
 ```
 
@@ -97,13 +103,15 @@ Two services can share one subdomain by routing on path. The "catch-all" service
 services:
   web:
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
       # catch-all — no path_rule
 
   ws:
     labels:
-      fibe.gg/expose: external:8081
+      fibe.gg/port: 8081
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
       fibe.gg/path_rule: Path(`/cable`) || Path(`/health`)
 ```

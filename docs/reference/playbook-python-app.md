@@ -61,7 +61,8 @@ services:
       fibe.gg/source_mount: /app
       fibe.gg/dockerfile: Dockerfile
       fibe.gg/start_command: sh -c "pip install -r requirements.txt && uvicorn app:main --host 0.0.0.0 --reload"
-      fibe.gg/expose: external:8000
+      fibe.gg/port: 8000
+      fibe.gg/visibility: external
       fibe.gg/production: "false"
       fibe.gg/subdomain: $$var__SUBDOMAIN
 
@@ -150,7 +151,8 @@ services:
     deploy:
       replicas: $$var__APP_REPLICAS
     labels:
-      fibe.gg/expose: external:8000
+      fibe.gg/port: 8000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
       fibe.gg/zerodowntime: "true"
       fibe.gg/healthcheck_path: /healthz
@@ -194,7 +196,7 @@ services:
       redis:
         condition: service_started
     command: celery -A project worker --loglevel=info
-    # no fibe.gg/expose — workers don't serve HTTP
+    # no fibe.gg/port — workers don't serve HTTP
 
   redis:
     image: redis:8-alpine

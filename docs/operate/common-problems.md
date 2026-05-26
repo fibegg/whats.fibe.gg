@@ -16,7 +16,7 @@ What the message means, and the smallest change that resolves it.
 | **Unknown `fibe.gg/` label** | You typed something Fibe doesn't recognize. Remove it or fix the spelling. Labels not under the `fibe.gg/` prefix pass through untouched. |
 | **Service has a build directive but no `fibe.gg/repo_url`** | Add the repo URL, or remove the Compose `build:` block. |
 | **`source_mount` without a `repo_url`** | Same fix; live mount needs to know where the source is. |
-| **Zero-downtime services must have an `expose`** | Rolling updates are for routed services; add `fibe.gg/expose`. |
+| **Zero-downtime services must have an `expose`** | Rolling updates are for routed services; add `fibe.gg/port`. |
 | **Zero-downtime services cannot have `ports:` or `container_name`** | Replicas can't share a pinned name or publish the same host port. Drop them. |
 | **Invalid repo URL** | Use an HTTPS GitHub or Gitea URL. SSH URLs aren't accepted. |
 | **Invalid exposure visibility** | Only the lowercase strings `internal` and `external` work. `External:3000` (uppercase E) is wrong. |

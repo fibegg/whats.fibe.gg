@@ -33,7 +33,8 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
 
 x-fibe.gg:
   metadata:
@@ -45,7 +46,7 @@ x-fibe.gg:
 
 | Before | After | Why |
 |---|---|---|
-| `ports: ["80:80"]` | `fibe.gg/expose: external:80` | Routed through Traefik |
+| `ports: ["80:80"]` | `fibe.gg/port: 80` + `fibe.gg/visibility: external` | Routed through Traefik |
 | `volumes: - ./public:/usr/share/nginx/html:ro` | dropped | Host-path bind isn't portable across Marquees |
 
 If you have actual HTML files to ship, two options:
@@ -61,7 +62,8 @@ services:
       - source: index_html
         target: /usr/share/nginx/html/index.html
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
 
 configs:
   index_html:
@@ -90,7 +92,8 @@ services:
     labels:
       fibe.gg/repo_url: https://github.com/owner/site
       fibe.gg/source_mount: /usr/share/nginx/html
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
       fibe.gg/production: "false"
 
 x-fibe.gg:
@@ -111,7 +114,8 @@ services:
     image: ghcr.io/owner/site:$$var__TAG
     restart: unless-stopped
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
 
 x-fibe.gg:
   variables:
@@ -132,7 +136,8 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
 
 x-fibe.gg:
@@ -153,7 +158,8 @@ For a "this is the marquee's only app" deployment:
 
 ```yaml
 labels:
-  fibe.gg/expose: external:80
+  fibe.gg/port: 80
+  fibe.gg/visibility: external
   fibe.gg/subdomain: "@"
 ```
 

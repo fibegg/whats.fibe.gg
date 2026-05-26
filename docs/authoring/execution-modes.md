@@ -11,7 +11,7 @@ A template runs in one of four shapes. Decide first; everything else follows.
 
 ## Long-running HTTP
 
-The default. Just expose your services with `fibe.gg/expose` and they stay up until you stop them. No special settings needed.
+The default. Just expose your services with `fibe.gg/port` and they stay up until you stop them. No special settings needed.
 
 ## Trick (one-shot)
 

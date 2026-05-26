@@ -70,7 +70,7 @@ Catches cross-label rules the shape schema cannot express:
 
 - Compose `build:` without `fibe.gg/repo_url` → `Service '<n>' has a build directive but lacks a fibe.gg/repo_url label`.
 - `fibe.gg/source_mount` without `fibe.gg/repo_url` → `Service '<n>' has source_mount but no repo_url`.
-- `fibe.gg/zerodowntime: "true"` without `fibe.gg/expose` → `Service '<n>': zerodowntime services must have 'fibe.gg/expose' set`.
+- `fibe.gg/zerodowntime: "true"` without `fibe.gg/port` → `Service '<n>': zerodowntime services must have 'fibe.gg/port' set`.
 - `fibe.gg/zerodowntime: "true"` with Compose `ports:` → `Service '<n>': zerodowntime services cannot have 'ports'`.
 - `fibe.gg/zerodowntime: "true"` with `container_name:` → `Service '<n>': zerodowntime services cannot have 'container_name'`.
 - Invalid `repo_url` URL (not GitHub/Gitea, not HTTPS).

@@ -78,7 +78,7 @@ Dotted segments. Special cases:
 
 - `[N]` — array index when the parent is an array.
 - `\.` — literal `.` in a key (rarely needed).
-- The editor matches the **longest contiguous run** of dotted segments against existing keys before descending. This lets you target `fibe.gg/expose` as a single key with a dot in it.
+- The editor matches the **longest contiguous run** of dotted segments against existing keys before descending. This lets you target `fibe.gg/port` as a single key with a dot in it.
 
 Allowed regex: `^[A-Za-z0-9_./\[\]-]+$`.
 
@@ -98,13 +98,13 @@ paths:
 
 ```yaml
 paths:
-  - services.web.labels.fibe.gg/expose
+  - services.web.labels.fibe.gg/port
   - services.web.labels.fibe.gg/subdomain
   - services.web.labels.fibe.gg/production
   - services.web.labels.fibe.gg/branch
 ```
 
-The dot in `fibe.gg/expose` is matched as a key, not a path separator.
+The dot in `fibe.gg/port` is matched as a key, not a path separator.
 
 ### Replica count
 
@@ -173,18 +173,19 @@ x-fibe.gg:
     PORT:
       name: Port
       default: "3000"
-      path: services.web.labels.fibe.gg/expose
+      path: services.web.labels.fibe.gg/port
 ```
 
 ```yaml
 services:
   web:
     labels:
-      fibe.gg/expose: external:$$var__PORT
+      fibe.gg/port: $$var__PORT
+      fibe.gg/visibility: external
       fibe.gg/subdomain: web
 ```
 
-In this pattern, `services.web.labels.fibe.gg/expose` is finally set to `PORT` from the path step, so inline is effectively ignored at that node.
+In this pattern, `services.web.labels.fibe.gg/port` is finally set to `PORT` from the path step, so inline is effectively ignored at that node.
 
 ### When to avoid path-binding
 
@@ -205,7 +206,8 @@ services:
     deploy:
       replicas: 1
     labels:
-      fibe.gg/expose: ""
+      fibe.gg/port: ""
+      fibe.gg/visibility: "internal"
 ```
 
 ## `path:` vs `paths:`

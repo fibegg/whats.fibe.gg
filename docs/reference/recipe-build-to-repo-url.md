@@ -55,7 +55,8 @@ services:
     image: ruby:3.3                       # base image, optional
     labels:
       fibe.gg/repo_url: https://github.com/owner/repo
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/production: "false"
       fibe.gg/start_command: bin/rails server -b 0.0.0.0
     environment:
@@ -84,7 +85,8 @@ services:
       fibe.gg/dockerfile: deploy/Dockerfile
       fibe.gg/build_target: production
       fibe.gg/build_args: "NODE_VERSION=20,BUILD_ENV=production"
-      fibe.gg/expose: external:8080
+      fibe.gg/port: 8080
+      fibe.gg/visibility: external
       fibe.gg/production: "true"
 ```
 
@@ -97,7 +99,8 @@ services:
       fibe.gg/repo_url: $$var__REPO_URL
       fibe.gg/branch: $$var__BRANCH
       fibe.gg/dockerfile: Dockerfile
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
 
 x-fibe.gg:
   variables:

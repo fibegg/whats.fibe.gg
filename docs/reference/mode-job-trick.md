@@ -46,7 +46,7 @@ x-fibe.gg:
 - **Strips service labels** — `fibe.gg/*` labels are removed from the runtime Compose. The platform has already used them to set up clones/mounts; the inner Compose runs as plain Docker.
 - **Forces `restart: "no"`** on every service. Restarts would fight job lifecycle.
 - **Forces `deploy.replicas: 1`** on every service. Replicas would multiply work.
-- **Forbids `fibe.gg/expose`** anywhere. Job services aren't user-facing.
+- **Forbids `fibe.gg/port`** anywhere. Job services aren't user-facing.
 - **Completes when all watched services exit.** Unwatched services (DB, queue) are torn down with the job.
 - **Fails the run** if any watched service exits non-zero.
 
@@ -110,7 +110,7 @@ This is the right home for CI credentials (`NPM_TOKEN`, `STRIPE_SECRET_KEY`) —
 
 - Long-running HTTP services. Use long-running templates.
 - Scheduled HTTP work — use a long-running service that does work internally. Job mode means "exit when done".
-- Services that need exposed ports. Job mode forbids `fibe.gg/expose`.
+- Services that need exposed ports. Job mode forbids `fibe.gg/port`.
 
 ## Triggering a Trick
 
@@ -186,7 +186,7 @@ services:
 
 - **Forgetting both `job_mode: true` AND `job_watch`** — only one of them: runtime behavior is undefined / falls back to long-running.
 - **Watched service that doesn't exit** (e.g. starts a dev server) — job never finishes. Watched services MUST exit.
-- **Setting `fibe.gg/expose` on a job service** — runtime rejects.
+- **Setting `fibe.gg/port` on a job service** — runtime rejects.
 - **`container_name:`, `ports:`, `restart: always`** — silently overridden, but misleading. Remove for clarity.
 - **No `setup`/`migrate` waiting** — if the test service runs before migrations finish, you get false-fail. Use `depends_on: service_completed_successfully`.
 

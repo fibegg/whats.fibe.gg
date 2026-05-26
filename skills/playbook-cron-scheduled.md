@@ -94,7 +94,7 @@ x-fibe.gg:
 
 | Decision | Reason |
 |---|---|
-| No `fibe.gg/expose` | Job-mode forbids exposed services |
+| No `fibe.gg/port` | Job-mode forbids exposed services |
 | `fibe.gg/job_watch: "true"` | One watched service decides success/failure |
 | `restart: "no"` | Required behavior; runtime forces it anyway |
 | `command:` inline shell | Self-contained — no Dockerfile build needed |

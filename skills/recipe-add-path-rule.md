@@ -35,13 +35,15 @@ Schema check fails with: `must only contain path matchers, not Host/Headers/Meth
 services:
   web:
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: app
       # no fibe.gg/path_rule — catch-all on app.<root>
 
   api:
     labels:
-      fibe.gg/expose: external:8080
+      fibe.gg/port: 8080
+      fibe.gg/visibility: external
       fibe.gg/subdomain: app                       # same subdomain
       fibe.gg/path_rule: PathPrefix(`/api`)
 ```
@@ -54,7 +56,8 @@ services:
 services:
   ws:
     labels:
-      fibe.gg/expose: external:8081
+      fibe.gg/port: 8081
+      fibe.gg/visibility: external
       fibe.gg/subdomain: app
       fibe.gg/path_rule: Path(`/cable`) || Path(`/health`) || PathPrefix(`/ws`)
 ```
@@ -67,7 +70,8 @@ This sends `/cable`, `/health`, and `/ws...` requests to the websocket service w
 services:
   legacy:
     labels:
-      fibe.gg/expose: external:5000
+      fibe.gg/port: 5000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: app
       fibe.gg/path_rule: PathRegexp(`/v[0-9]+/legacy/.*`)
 ```
@@ -108,13 +112,15 @@ This is the most common multi-service-per-subdomain pattern:
 services:
   web:                                  # default route
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
       # no path_rule
 
   ws:                                   # specific
     labels:
-      fibe.gg/expose: external:8081
+      fibe.gg/port: 8081
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
       fibe.gg/path_rule: Path(`/cable`) || Path(`/health`)
 ```

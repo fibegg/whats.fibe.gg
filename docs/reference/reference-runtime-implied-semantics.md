@@ -44,7 +44,7 @@ Keep `restart: "no"` on setup services for clarity, even if Fibe would force it 
 
 `fibe.gg/zerodowntime: "true"` is a strong signal:
 
-- service must be exposed: `fibe.gg/expose` required
+- service must be exposed: `fibe.gg/port` required
 - Compose `ports:` must be absent
 - `container_name:` must be absent
 
@@ -57,7 +57,8 @@ services:
     deploy:
       replicas: 4
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/zerodowntime: "true"
       fibe.gg/healthcheck_path: /up
       fibe.gg/healthcheck_interval: 10s

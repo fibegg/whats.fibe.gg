@@ -61,7 +61,8 @@ services:
   web:
     image: nginx:alpine
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
 ```
 
 ### In CI / scripts
@@ -97,7 +98,7 @@ The template is a Docker Compose file. The schema validates that:
 
 ### `fibe.gg/*` labels
 
-Eighteen labels are recognized. The table below summarizes each one — for the full prose explanation, see [Service labels](/authoring/service-labels/) and the [`reference-fibe-labels`](/reference/reference-fibe-labels/) skill.
+Twenty labels are recognized. The table below summarizes each one — for the full prose explanation, see [Service labels](/authoring/service-labels/) and the [`reference-fibe-labels`](/reference/reference-fibe-labels/) skill.
 
 | Label | Value shape | Required when | Example |
 | --- | --- | --- | --- |
@@ -110,7 +111,8 @@ Eighteen labels are recognized. The table below summarizes each one — for the 
 | `fibe.gg/build_target` | string | multi-stage build | `production` |
 | `fibe.gg/build_args` | `KEY=value` comma-list | when `--build-arg` values are needed | `KEY=val,K2=v2` |
 | `fibe.gg/production` | `true` / `false` | distinguish built image vs source-mounted dev | `true` |
-| `fibe.gg/expose` | `external:PORT`, `internal:PORT`, or bare port (1–65535) | the service should have a URL | `external:3000` |
+| `fibe.gg/port` | port number (1–65535) | the service should have a URL | `3000` |
+| `fibe.gg/visibility` | `external` or `internal` | non-default visibility | `external` |
 | `fibe.gg/subdomain` | `@`, lowercase alnum+hyphen, or empty | overriding the default (service-name) subdomain | `api` |
 | `fibe.gg/path_rule` | Traefik `Path` / `PathPrefix` / `PathRegexp` matcher | sharing one subdomain across services | `PathPrefix(\`/api\`)` |
 | `fibe.gg/zerodowntime` | `true` / `false` | rolling updates wanted | `true` |

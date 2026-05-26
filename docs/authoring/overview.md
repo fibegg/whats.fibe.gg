@@ -25,7 +25,8 @@ services:
   web:
     image: nginx:alpine
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
 ```
 
 One service, one label. You get a public HTTPS URL with no other setup.

@@ -132,7 +132,8 @@ services:
     labels:
       <<: *app-build-labels
       fibe.gg/start_command: bin/rails server -b 0.0.0.0
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: ${SUBDOMAIN:-app}
       fibe.gg/production: "true"
       fibe.gg/zerodowntime: "true"

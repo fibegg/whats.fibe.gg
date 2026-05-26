@@ -37,7 +37,7 @@ path: services.web.deploy.replicas
 
 ```yaml
 paths:
-  - services.web.labels.fibe.gg/expose
+  - services.web.labels.fibe.gg/port
   - services.web.labels.fibe.gg/subdomain
   - services.gitea.labels.fibe.gg/subdomain
 ```

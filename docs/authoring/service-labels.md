@@ -4,7 +4,7 @@ description: The complete set of fibe.gg/* labels you can add under labels on a 
 slug: /authoring/service-labels
 sidebar_position: 3
 image: /img/og/authoring-service-labels.png
-keywords: [fibe.gg labels, repo_url, expose, subdomain, path_rule, healthcheck, source_mount, job_watch]
+keywords: [fibe.gg labels, repo_url, port, visibility, subdomain, path_rule, healthcheck, source_mount, job_watch]
 ---
 
 The complete set of `fibe.gg/*` labels you can add under `labels:` on a service. Any unrecognized `fibe.gg/*` label is rejected, so typos surface quickly.
@@ -27,7 +27,8 @@ The complete set of `fibe.gg/*` labels you can add under `labels:` on a service.
 
 | Label | Purpose |
 | --- | --- |
-| `fibe.gg/expose` | Make the service reachable. Use `external:PORT` for a public HTTPS URL, `internal:PORT` for an internal URL gated by Basic Auth, or just the bare port number. |
+| `fibe.gg/port` | Container port to route through Traefik. |
+| `fibe.gg/visibility` | `external` for a public HTTPS URL, or `internal` for a URL gated by Basic Auth. Defaults to `external`. |
 | `fibe.gg/subdomain` | Choose the subdomain under the Marquee's root domain. Lowercase letters and digits, optional hyphens. Use `@` to bind at the root domain itself. Defaults to the service name. |
 | `fibe.gg/path_rule` | Share a subdomain across multiple services using path matchers like `Path`, `PathPrefix`, and `PathRegexp`. Combine with `&&` or `||`. |
 
@@ -65,7 +66,7 @@ The runtime enforces these consistency rules:
 
 - A Compose `build:` block **requires** `fibe.gg/repo_url`.
 - `fibe.gg/source_mount` **requires** `fibe.gg/repo_url`.
-- `fibe.gg/zerodowntime: "true"` **requires** `fibe.gg/expose`, and the service **must not** declare `ports:` or `container_name`.
+- `fibe.gg/zerodowntime: "true"` **requires** `fibe.gg/port`, and the service **must not** declare `ports:` or `container_name`.
 - Any label value can be a variable reference using `$$var__NAME`.
 
 ## A example
@@ -81,7 +82,8 @@ services:
       fibe.gg/repo_url: https://github.com/owner/rails-app
       fibe.gg/source_mount: /app
       fibe.gg/start_command: bin/rails server -b 0.0.0.0 -p 3000
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: app
       fibe.gg/production: "false"
       fibe.gg/env_file: .env.example

@@ -21,7 +21,8 @@ services:
       DATABASE_URL: "postgres://user:$$var__DB_PASSWORD@db:5432/app"
       PUBLIC_URL: "https://$$var__SUBDOMAIN.$$root_domain"
     labels:
-      fibe.gg/expose: external:$$var__PORT
+      fibe.gg/port: $$var__PORT
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
 ```
 

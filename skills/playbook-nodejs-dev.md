@@ -43,7 +43,8 @@ services:
       fibe.gg/dockerfile: Dockerfile
       fibe.gg/env_file: .env.example
       fibe.gg/start_command: npm run dev -- --host 0.0.0.0
-      fibe.gg/expose: external:5173
+      fibe.gg/port: 5173
+      fibe.gg/visibility: external
       fibe.gg/production: "false"
       fibe.gg/subdomain: $$var__SUBDOMAIN
 
@@ -80,7 +81,7 @@ x-fibe.gg:
 | `fibe.gg/source_mount: /app` | Bind-mount cloned repo into `/app` |
 | `fibe.gg/start_command: npm run dev -- --host 0.0.0.0` | Dev server with watcher; binds 0.0.0.0 |
 | `fibe.gg/production: "false"` | Source-mounted mode (no built image) |
-| `fibe.gg/expose: external:5173` | Vite's default; change for Next.js (3000), Express (8080), etc. |
+| `fibe.gg/port: 5173` + `fibe.gg/visibility: external` | Vite's default; change for Next.js (3000), Express (8080), etc. |
 
 ## Critical: `node_modules` not in repo
 
@@ -114,7 +115,8 @@ Without this, the container is reachable but the browser sees `Invalid Host head
 ```yaml
 labels:
   fibe.gg/start_command: npm run dev -- -H 0.0.0.0
-  fibe.gg/expose: external:3000
+  fibe.gg/port: 3000
+  fibe.gg/visibility: external
 ```
 
 ### Express + nodemon
@@ -122,7 +124,8 @@ labels:
 ```yaml
 labels:
   fibe.gg/start_command: npx nodemon --inspect=0.0.0.0:9229 -- app.js
-  fibe.gg/expose: external:3000
+  fibe.gg/port: 3000
+  fibe.gg/visibility: external
 ```
 
 ### Polling for filesystem events (rare)
@@ -148,7 +151,8 @@ services:
       fibe.gg/branch: $$var__BRANCH
       fibe.gg/source_mount: /app
       fibe.gg/start_command: $$var__START_COMMAND
-      fibe.gg/expose: external:$$var__PORT
+      fibe.gg/port: $$var__PORT
+      fibe.gg/visibility: external
       fibe.gg/production: $$var__PRODUCTION
 
 x-fibe.gg:

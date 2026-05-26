@@ -37,16 +37,16 @@ Schema success alone is not enough. See [reference-validation-pipeline](referenc
 - [ ] Map-form labels preferred (easier to target with paths).
 - [ ] Boolean labels use only `"true"` / `"false"` strings or YAML booleans (in map form).
 - [ ] Expose values lowercase `internal` / `external`; concrete ports in `1..65535` or `$$var__NAME`.
-- [ ] User-facing HTTP via `fibe.gg/expose`, never Compose `ports:`.
+- [ ] User-facing HTTP via `fibe.gg/port`, never Compose `ports:`.
 - [ ] `fibe.gg/subdomain` set only when default routing isn't right.
 - [ ] `fibe.gg/path_rule` uses only `Path`, `PathPrefix`, `PathRegexp` — never `Host`, `Headers`, `Method`, `Query`, `ClientIP`.
-- [ ] Internal-only routes use `internal:PORT`.
+- [ ] Internal-only routes use `fibe.gg/visibility: internal` with `fibe.gg/port: PORT`.
 - [ ] Non-Fibe labels are intentional and safe (e.g. `traefik.enable`, vendor labels are pass-through).
 
 ## Zero-downtime
 
 Opt in **only** if:
-- [ ] Service is exposed via `fibe.gg/expose`.
+- [ ] Service is exposed via `fibe.gg/port`.
 - [ ] Service is HTTP and supports multi-replica concurrency.
 - [ ] Has a real HTTP healthcheck endpoint.
 - [ ] No `ports:` or `container_name:`.
@@ -95,7 +95,7 @@ Reject / revise templates that:
 
 ## Common pre-publish failures
 
-- `ports:` left in instead of `fibe.gg/expose`.
+- `ports:` left in instead of `fibe.gg/port`.
 - `External:3000` (uppercase E).
 - `yes` / `on` / `1` as boolean values.
 - `Host(...)` in `path_rule`.

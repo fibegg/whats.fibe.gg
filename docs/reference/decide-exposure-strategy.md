@@ -9,16 +9,16 @@ tags: ["reference", "decision"]
 format: md
 ---
 
-The output of this decision is the value of `fibe.gg/expose`, plus optionally `fibe.gg/subdomain` and `fibe.gg/path_rule`.
+The output of this decision is `fibe.gg/port`, optional `fibe.gg/visibility`, plus optionally `fibe.gg/subdomain` and `fibe.gg/path_rule`.
 
 ## Step 1 — Should this service be reachable at all?
 
 | Service kind | Reachable? |
 |---|---|
-| Public web app | yes — `external:PORT` |
-| Internal admin / metrics / status page | yes — `internal:PORT` |
-| Background worker (Sidekiq, RQ, Celery) | no — omit `fibe.gg/expose` |
-| Database / cache / queue | no — omit `fibe.gg/expose` (they communicate inside the Compose network) |
+| Public web app | yes — `fibe.gg/port: PORT` and `fibe.gg/visibility: external` |
+| Internal admin / metrics / status page | yes — `fibe.gg/port: PORT` and `fibe.gg/visibility: internal` |
+| Background worker (Sidekiq, RQ, Celery) | no — omit `fibe.gg/port` |
+| Database / cache / queue | no — omit `fibe.gg/port` (they communicate inside the Compose network) |
 | Auxiliary build-time service (setup, migrate, notify) | no |
 | AnyCable/WebSocket server (talked-to from a public web service) | no |
 
@@ -26,10 +26,10 @@ Internal services talk over the Compose `default` network using their service na
 
 ## Step 2 — Pick internal vs external
 
-- **`external:PORT`** — public HTTPS route via Traefik on `https://<subdomain>.<marquee-root-domain>`. No additional auth from Fibe. Use for the user-facing app.
-- **`internal:PORT`** — same routing but Traefik adds a Basic Auth middleware with Marquee credentials. Use for admin consoles (Sidekiq Dashboard, RailsAdmin, Grafana, pgAdmin) that shouldn't be public but you still want a browser URL.
+- **`fibe.gg/visibility: external`** — public HTTPS route via Traefik on `https://<subdomain>.<marquee-root-domain>`. No additional auth from Fibe. Use for the user-facing app.
+- **`fibe.gg/visibility: internal`** — same routing but Traefik adds a Basic Auth middleware with Marquee credentials. Use for admin consoles (Sidekiq Dashboard, RailsAdmin, Grafana, pgAdmin) that shouldn't be public but you still want a browser URL.
 
-If you want no public surface at all (only reachable from other containers in the network), do NOT set `fibe.gg/expose`. The service is then only reachable inside Compose's network.
+If you want no public surface at all (only reachable from other containers in the network), do NOT set `fibe.gg/port`. The service is then only reachable inside Compose's network.
 
 ## Step 3 — Pick the subdomain
 
@@ -54,12 +54,14 @@ Sometimes two services share one host but differ by URL path. The classic case i
 services:
   web:
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: ${SUBDOMAIN:-next}
       # no path_rule → catch-all
   ws:
     labels:
-      fibe.gg/expose: external:8081
+      fibe.gg/port: 8081
+      fibe.gg/visibility: external
       fibe.gg/subdomain: ${SUBDOMAIN:-next}
       fibe.gg/path_rule: Path(`/cable`) || Path(`/health`)
 ```
@@ -70,18 +72,25 @@ See [recipe-add-path-rule](recipe-add-path-rule.md).
 
 ## Step 5 — Pick the port
 
-`fibe.gg/expose: <visibility>:PORT` where PORT is the **container** port the service listens on, not a host port. Fibe owns host port allocation.
+`fibe.gg/port: PORT` is the **container** port the service listens on, not a host port. Set `fibe.gg/visibility` separately when you need `internal`; otherwise visibility defaults to `external`. Fibe owns host port allocation.
 
-The PORT must be `1..65535`. Bare `PORT` (no `internal:` / `external:`) is accepted as internal.
+The PORT must be `1..65535`. Omitting `fibe.gg/visibility` defaults to `external`.
 
 ```yaml
-fibe.gg/expose: external:80      # nginx static
-fibe.gg/expose: external:3000    # rails / node
-fibe.gg/expose: external:5173    # vite dev
-fibe.gg/expose: external:8000    # python
-fibe.gg/expose: internal:9000    # admin console
-fibe.gg/expose: $$var__PORT      # variable
-fibe.gg/expose: external:$$var__PORT  # template uses launcher's port choice
+fibe.gg/port: 80      # nginx static
+fibe.gg/visibility: external
+fibe.gg/port: 3000    # rails / node
+fibe.gg/visibility: external
+fibe.gg/port: 5173    # vite dev
+fibe.gg/visibility: external
+fibe.gg/port: 8000    # python
+fibe.gg/visibility: external
+fibe.gg/port: 9000    # admin console
+fibe.gg/visibility: internal
+fibe.gg/port: $$var__PORT      # variable
+fibe.gg/visibility: internal
+fibe.gg/port: $$var__PORT  # template uses launcher's port choice
+fibe.gg/visibility: external
 ```
 
 ## Step 6 — Verify the app listens on `0.0.0.0`
@@ -108,20 +117,20 @@ Compose `ports:` exposes a host port directly, bypassing Traefik. On Fibe this:
 - doesn't get a public URL via the Marquee root domain,
 - conflicts with `fibe.gg/zerodowntime: "true"` (validator rejects).
 
-Always convert `ports:` to `fibe.gg/expose`. See [recipe-ports-to-expose](recipe-ports-to-expose.md).
+Always convert `ports:` to `fibe.gg/port`. See [recipe-ports-to-expose](recipe-ports-to-expose.md).
 
 ## Decision tree summary
 
 ```
 Should service be reachable?
-├─ No  → omit fibe.gg/expose entirely
+├─ No  → omit fibe.gg/port entirely
 └─ Yes
-   ├─ Public user-facing       → fibe.gg/expose: external:PORT
+   ├─ Public user-facing       → fibe.gg/port: PORT and fibe.gg/visibility: external
    │  ├─ Default service-name routing? → no extra labels
    │  ├─ Different subdomain?         → fibe.gg/subdomain: <name>
    │  ├─ At root of Marquee?          → fibe.gg/subdomain: "@"
    │  └─ Sharing subdomain with another service? → fibe.gg/path_rule + same subdomain
-   └─ Admin / staff only       → fibe.gg/expose: internal:PORT
+   └─ Admin / staff only       → fibe.gg/port: PORT and fibe.gg/visibility: internal
       (Marquee Basic Auth is applied automatically)
 ```
 

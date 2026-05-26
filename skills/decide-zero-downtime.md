@@ -11,7 +11,7 @@ description: Use to decide whether to enable `fibe.gg/zerodowntime` on a service
 
 Enable **only when all of these are true**:
 
-1. The service is **exposed via `fibe.gg/expose`**.
+1. The service is **exposed via `fibe.gg/port`**.
 2. The service speaks **HTTP** (so a path-based healthcheck makes sense).
 3. The service can run with **multiple replicas concurrently** — stateless, or session-shared via external store.
 4. The service does **not** require a single fixed `container_name`.
@@ -40,7 +40,8 @@ services:
   web:
     image: ghcr.io/owner/app:latest
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/zerodowntime: "true"
 ```
 
@@ -97,7 +98,8 @@ services:
     deploy:
       replicas: ${WEB_REPLICAS:-4}
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
       fibe.gg/zerodowntime: "true"
       fibe.gg/healthcheck_path: /up

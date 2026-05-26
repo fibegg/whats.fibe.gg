@@ -164,7 +164,7 @@ recipe-named-volumes: Use to declare Compose named volumes for persistent data (
   web:   https://whats.fibe.gg/skills/recipe-named-volumes.md
   local: ./skills/recipe-named-volumes.md
 
-recipe-ports-to-expose: Use to convert Compose `ports:` declarations into `fibe.gg/expose` labels for public/internal HTTP routing through Traefik.
+recipe-ports-to-expose: Use to convert Compose `ports:` declarations into `fibe.gg/port` labels for public/internal HTTP routing through Traefik.
   web:   https://whats.fibe.gg/skills/recipe-ports-to-expose.md
   local: ./skills/recipe-ports-to-expose.md
 

@@ -60,7 +60,8 @@ services:
       DATABASE_URL: "postgres://user:$$var__DB_PASSWORD@db:5432/app"
       PUBLIC_URL: "https://$$var__SUBDOMAIN.$$root_domain"
     labels:
-      fibe.gg/expose: external:$$var__PORT
+      fibe.gg/port: $$var__PORT
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
 ```
 
@@ -97,7 +98,7 @@ Use this as a quick map during conversion:
 
 | Variable usage pattern | Best form | Example |
 |---|---|---|
-| Full scalar value (env var, label value, replica count, path destination) | `path:` / `paths:` | `fibe.gg/expose` via `paths: services.web.labels.fibe.gg/expose` |
+| Full scalar value (env var, label value, replica count, path destination) | `path:` / `paths:` | `fibe.gg/port` via `paths: services.web.labels.fibe.gg/port` |
 | Part of a larger value (URL, tag, combined command string, prefix/suffix) | `$$var__NAME` inline | `image: registry/app:$$var__TAG` |
 | Existing `${VAR}` from input compose and launcher should control it | Convert to `$$var__` | `DATABASE_URL: postgres://...$$var__PASSWORD...` |
 | Mixed fragments in the same logical token | Inline | `PathPrefix('/$$var__PATH_PREFIX')` |
@@ -146,7 +147,8 @@ services:
     deploy:
       replicas: 1
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
       fibe.gg/path_rule: PathPrefix(`/$$var__PATH_PREFIX`)
 ```

@@ -67,7 +67,7 @@ Fibe applies one-shot rules. You don't write these:
 - Every service set to **one replica**.
 - Every service set to `restart: no`.
 - Fibe labels stripped from the final compose at compile time.
-- `fibe.gg/expose` is forbidden — a Trick isn't there to serve traffic.
+- `fibe.gg/port` is forbidden — a Trick isn't there to serve traffic.
 
 What you write:
 

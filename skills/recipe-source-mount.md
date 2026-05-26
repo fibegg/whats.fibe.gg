@@ -29,7 +29,7 @@ The app must:
 
 1. **Bind on `0.0.0.0`**, not localhost.
 2. **Run a watch/dev process** (Vite, webpack-dev-server, nodemon, Rails `bin/dev`, `flask --debug run`, `uvicorn --reload`).
-3. **Listen on the port from `fibe.gg/expose`.**
+3. **Listen on the port from `fibe.gg/port`.**
 4. **Allow the public Fibe host** when the framework validates hosts (Vite 6+ needs `server.allowedHosts: true`).
 5. **Watch the mounted source path** (some watchers need polling enabled when filesystem events don't cross the bind mount — e.g. `CHOKIDAR_USEPOLLING=true` for Node).
 6. **Keep `node_modules` / `__pycache__` / `tmp` / `Gemfile.lock`-derived dirs OUT of the source tree mounted from the repo** — they live in container-only volumes.
@@ -49,7 +49,8 @@ services:
       fibe.gg/repo_url: https://github.com/owner/repo
       fibe.gg/source_mount: /app
       fibe.gg/start_command: npm run dev -- --host 0.0.0.0
-      fibe.gg/expose: external:5173
+      fibe.gg/port: 5173
+      fibe.gg/visibility: external
       fibe.gg/production: "false"
 
 volumes:
@@ -71,7 +72,8 @@ services:
       fibe.gg/repo_url: ...
       fibe.gg/source_mount: /app
       fibe.gg/start_command: sh -c "pip install -r requirements.txt && uvicorn app:main --host 0.0.0.0 --reload"
-      fibe.gg/expose: external:8000
+      fibe.gg/port: 8000
+      fibe.gg/visibility: external
       fibe.gg/production: "false"
 volumes:
   pip_cache:
@@ -122,7 +124,8 @@ services:
       fibe.gg/repo_url: https://github.com/owner/repo
       fibe.gg/dockerfile: Dockerfile
       fibe.gg/production: "true"       # built image; no source mount
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/zerodowntime: "true"
       # ... healthcheck labels ...
 ```
@@ -139,7 +142,8 @@ services:
       fibe.gg/repo_url: $$var__REPO_URL
       fibe.gg/source_mount: /app
       fibe.gg/start_command: $$var__START_COMMAND
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/production: $$var__PRODUCTION
 
 x-fibe.gg:

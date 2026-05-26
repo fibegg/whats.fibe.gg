@@ -59,7 +59,8 @@ services:
       - wp_data:/var/www/html
     restart: unless-stopped
     labels:
-      fibe.gg/expose: external:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
 
   db:
@@ -131,7 +132,7 @@ x-fibe.gg:
 
 | Before | After | Why |
 |---|---|---|
-| `ports: ["8080:80"]` | `fibe.gg/expose: external:80` | Public via Traefik |
+| `ports: ["8080:80"]` | `fibe.gg/port: 80` + `fibe.gg/visibility: external` | Public via Traefik |
 | `wp_password` hardcoded | `random: true` variable | Generated per Playground |
 | `root_pw` hardcoded | separate `random: true` variable | Distinct from user password |
 | `wordpress:latest` | `wordpress:$$var__WP_VERSION` | Pin version per launch |

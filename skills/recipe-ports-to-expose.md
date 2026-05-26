@@ -1,21 +1,21 @@
 ---
 name: recipe-ports-to-expose
-description: Use to convert Compose `ports:` declarations into `fibe.gg/expose` labels for public/internal HTTP routing through Traefik.
+description: Use to convert Compose `ports:` declarations into `fibe.gg/port` labels for public/internal HTTP routing through Traefik.
 ---
 
-# Recipe: `ports:` → `fibe.gg/expose`
+# Recipe: `ports:` → `fibe.gg/port`
 
-Compose `ports:` publishes a container port to a host port. On Fibe, **all** user-facing HTTP routing is done by Traefik based on `fibe.gg/expose`. Drop `ports:` and add the label.
+Compose `ports:` publishes a container port to a host port. On Fibe, **all** user-facing HTTP routing is done by Traefik based on `fibe.gg/port`. Drop `ports:` and add the label.
 
 ## Mapping
 
 | Compose `ports:` form | Container port | Fibe label |
 |---|---|---|
-| `- "3000:3000"` | 3000 | `fibe.gg/expose: external:3000` |
-| `- "8080:80"` | 80 | `fibe.gg/expose: external:80` |
-| `- "5173"` | 5173 (auto host) | `fibe.gg/expose: external:5173` |
-| `- "127.0.0.1:8000:8000"` (host-loopback only) | 8000 | `fibe.gg/expose: internal:8000` (Basic Auth) |
-| `- "9000:9000"` for an admin console | 9000 | `fibe.gg/expose: internal:9000` |
+| `- "3000:3000"` | 3000 | `fibe.gg/port: 3000` + `fibe.gg/visibility: external` |
+| `- "8080:80"` | 80 | `fibe.gg/port: 80` + `fibe.gg/visibility: external` |
+| `- "5173"` | 5173 (auto host) | `fibe.gg/port: 5173` + `fibe.gg/visibility: external` |
+| `- "127.0.0.1:8000:8000"` (host-loopback only) | 8000 | `fibe.gg/port: 8000` + `fibe.gg/visibility: internal` (Basic Auth) |
+| `- "9000:9000"` for an admin console | 9000 | `fibe.gg/port: 9000` + `fibe.gg/visibility: internal` |
 
 The PORT in the label is the **container** port (the second number in Compose's `host:container` form, or the only number when bare). Fibe owns host port allocation; you cannot pin a host port.
 
@@ -23,9 +23,9 @@ The PORT in the label is the **container** port (the second number in Compose's 
 
 1. **Read the container port** from the rightmost colon of each `ports:` entry.
 2. **Decide visibility**:
-   - Public web → `external:`
-   - Admin/staff → `internal:`
-   - Not human-facing (DB/queue/cache) → no `fibe.gg/expose` at all; **delete** the `ports:` entry.
+   - Public web → `fibe.gg/visibility: external`
+   - Admin/staff → `fibe.gg/visibility: internal`
+   - Not human-facing (DB/queue/cache) → no `fibe.gg/port` at all; **delete** the `ports:` entry.
 3. **Add the label** under `labels:` on the service.
 4. **Delete the `ports:` block** from the service.
 5. **Add `fibe.gg/subdomain`** if you don't want the default (service name) routing. See [recipe-add-subdomain](recipe-add-subdomain.md).
@@ -48,12 +48,13 @@ services:
   web:
     image: ghcr.io/owner/app:latest
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
 ```
 
 ### Multiple ports — pick the one humans use, drop the rest
 
-If a Compose service publishes multiple ports (e.g. main HTTP + metrics), only **one** can be public-facing per `fibe.gg/expose` label. For metrics/admin on a different port, split into two services if they really need separate routing, or omit the extra port entirely (it's reachable inside the Compose network without `ports:`).
+If a Compose service publishes multiple ports (e.g. main HTTP + metrics), only **one** can be public-facing per `fibe.gg/port` label. For metrics/admin on a different port, split into two services if they really need separate routing, or omit the extra port entirely (it's reachable inside the Compose network without `ports:`).
 
 ```yaml
 # BEFORE
@@ -69,7 +70,8 @@ services:
   app:
     image: my-app
     labels:
-      fibe.gg/expose: external:8080
+      fibe.gg/port: 8080
+      fibe.gg/visibility: external
 ```
 
 Metrics still reachable as `app:9090` from another container inside the Compose network.
@@ -91,7 +93,8 @@ services:
   pgadmin:
     image: dpage/pgadmin4:latest
     labels:
-      fibe.gg/expose: internal:80
+      fibe.gg/port: 80
+      fibe.gg/visibility: internal
       fibe.gg/subdomain: pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
@@ -127,7 +130,8 @@ services:
   web:
     image: ghcr.io/owner/app:latest
     labels:
-      fibe.gg/expose: external:$$var__PORT
+      fibe.gg/port: $$var__PORT
+      fibe.gg/visibility: external
 
 x-fibe.gg:
   variables:
@@ -142,10 +146,10 @@ See [recipe-inline-variables](recipe-inline-variables.md).
 
 ## Pitfalls
 
-- **Leaving `ports:` while also setting `fibe.gg/expose`** — works for non-zero-downtime services, but `ports:` is a security/firewall surprise. Always remove it.
+- **Leaving `ports:` while also setting `fibe.gg/port`** — works for non-zero-downtime services, but `ports:` is a security/firewall surprise. Always remove it.
 - **Leaving `ports:` while turning on `fibe.gg/zerodowntime: "true"`** — validator rejects (`zerodowntime services cannot have 'ports'`).
-- **Setting `fibe.gg/expose` on a service that doesn't actually listen on that port** — Traefik routes traffic; the container 404s or refuses. Verify with `docker exec <c> ss -ltnp` (or equivalent).
-- **Using `external:` for a port the app binds to localhost only** — `0.0.0.0` is required. Fix the app's bind config (see [decide-exposure-strategy](decide-exposure-strategy.md)).
+- **Setting `fibe.gg/port` on a service that doesn't actually listen on that port** — Traefik routes traffic; the container 404s or refuses. Verify with `docker exec <c> ss -ltnp` (or equivalent).
+- **Using `fibe.gg/visibility: external` for a port the app binds to localhost only** — `0.0.0.0` is required. Fix the app's bind config (see [decide-exposure-strategy](decide-exposure-strategy.md)).
 
 ## Related skills
 

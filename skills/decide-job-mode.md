@@ -23,7 +23,7 @@ You can combine schedule + trigger on one template — Fibe will launch on eithe
 ```
 input intent
 ├─ "deploy a web app"
-│  └─ long-running, with fibe.gg/expose
+│  └─ long-running, with fibe.gg/port
 │
 ├─ "run a one-off task that exits"
 │  └─ job-mode (Trick), with fibe.gg/job_watch
@@ -37,7 +37,7 @@ input intent
 
 ## Long-running HTTP (the default)
 
-Don't add anything special. The presence of `fibe.gg/expose` is enough. Examples: Rails web app, WordPress, Wiki.js, nginx, Flask, FastAPI. See [convert-compose-to-fibe](convert-compose-to-fibe.md) for the standard flow.
+Don't add anything special. The presence of `fibe.gg/port` is enough. Examples: Rails web app, WordPress, Wiki.js, nginx, Flask, FastAPI. See [convert-compose-to-fibe](convert-compose-to-fibe.md) for the standard flow.
 
 ## Job-mode
 
@@ -70,7 +70,7 @@ x-fibe.gg:
 
 Job-mode constraints (runtime-enforced):
 
-- **No `fibe.gg/expose`** anywhere — job services are not user-facing.
+- **No `fibe.gg/port`** anywhere — job services are not user-facing.
 - Watched services must **exit** (not run a dev server / sleep loop).
 - Unwatched services (DB, queue, cache) just need to start; they get torn down when all watched services finish.
 - Fibe **forces** `restart: "no"` and `deploy.replicas: 1` on every service in a job-mode template.
@@ -124,7 +124,7 @@ See [mode-trigger-vcs](mode-trigger-vcs.md).
 
 ## Compatibility matrix
 
-| Template shape | Can have `fibe.gg/expose`? | Must have `job_watch` somewhere? | `restart` honored? | Replicas honored? |
+| Template shape | Can have `fibe.gg/port`? | Must have `job_watch` somewhere? | `restart` honored? | Replicas honored? |
 |---|---|---|---|---|
 | Long-running HTTP | yes | no | yes | yes |
 | Job-mode | no | yes | forced to `no` | forced to `1` |

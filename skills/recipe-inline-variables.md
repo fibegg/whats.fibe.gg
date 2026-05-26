@@ -60,7 +60,8 @@ services:
 services:
   web:
     labels:
-      fibe.gg/expose: external:$$var__PORT
+      fibe.gg/port: $$var__PORT
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
       fibe.gg/path_rule: PathPrefix(`/$$var__PATH_PREFIX`)
 ```
@@ -168,11 +169,11 @@ With no default/user value, `fibe.gg/path_rule` becomes empty string.
 |---|---|
 | `services.web.environment.RAILS_ENV` should be the variable | `path:` (whole node, cleaner) |
 | `services.web.image: gcr.io/x/y:$$var__TAG` | inline (fragment) |
-| `services.web.labels.fibe.gg/expose: external:$$var__PORT` | inline (suffix is fragment) |
+| `services.web.labels.fibe.gg/port: $$var__PORT` | either; `path:` cleaner for a whole port value |
 | `services.web.labels.fibe.gg/subdomain` is exactly the variable | either; `path:` cleaner |
 | `services.web.deploy.replicas` should be a typed integer | `path:` (the binding writes integer, not string) |
 
-Use `path:` for whole-node bindings such as replica counts, passwords, and environment names. Use inline variables for fragments such as `fibe.gg/expose` ports and image tags.
+Use `path:` for whole-node bindings such as replica counts, passwords, port labels, and environment names. Use inline variables for fragments such as image tags.
 
 ## Why inline over `${VAR:-default}` Compose substitution
 

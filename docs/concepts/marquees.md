@@ -46,21 +46,23 @@ Marquees come in tiers, purchased from your [Wallet](/concepts/billing/). Differ
 
 Two URL kinds per service:
 
-- **Public (`external:PORT`)** — `https://<subdomain>.<root-domain>`. Anyone with the URL reaches it.
-- **Internal (`internal:PORT`)** — same shape, Basic Auth in front.
+- **Public (`fibe.gg/visibility: external` with `fibe.gg/port: PORT`)** — `https://<subdomain>.<root-domain>`. Anyone with the URL reaches it.
+- **Internal (`fibe.gg/visibility: internal` with `fibe.gg/port: PORT`)** — same shape, Basic Auth in front.
 
-Choice is per-service, via the `fibe.gg/expose` label. Container ports are not published manually. Fibe handles binding, certificates, the proxy.
+Choice is per-service, via the `fibe.gg/port` label. Container ports are not published manually. Fibe handles binding, certificates, the proxy.
 
 ```yaml
 services:
   web:
     image: nginx:alpine
     labels:
-      fibe.gg/expose: external:80   # → https://web.<root-domain>
+      fibe.gg/port: 80   # → https://web.<root-domain>
+      fibe.gg/visibility: external
   admin:
     image: my-org/admin:1.0
     labels:
-      fibe.gg/expose: internal:8080 # → https://admin.<root-domain> (Basic Auth)
+      fibe.gg/port: 8080 # → https://admin.<root-domain> (Basic Auth)
+      fibe.gg/visibility: internal
 ```
 
 Subdomain defaults to the service name. Override with `fibe.gg/subdomain`. See [Service labels → Routing & exposure](/authoring/service-labels/).

@@ -11,7 +11,8 @@
       { "key": "source_mount", "description_key": "desc_source_mount", "example": "/app", "value_key": "val_path", "required_key": "req_dynamic", "required_code": true },
       { "key": "subdomain", "description_key": "desc_subdomain", "example": "api", "value_key": "val_string", "required_key": "req_exposed", "required_code": true },
       { "key": "branch", "description_key": "desc_branch", "example": "main", "value_key": "val_string", "required_key": "req_dynamic", "required_code": true },
-      { "key": "expose", "description_key": "desc_expose", "example": "external:3000", "value_key": "val_internal_external", "required_key": "req_no", "required_code": false },
+      { "key": "port", "description_key": "desc_port", "example": "3000", "value_key": "val_port", "required_key": "req_no", "required_code": false },
+      { "key": "visibility", "description_key": "desc_visibility", "example": "external", "value_key": "val_visibility", "required_key": "req_no", "required_code": false },
       { "key": "start_command", "description_key": "desc_start_cmd", "example": "bundle exec rails s", "value_key": "val_string", "required_key": "req_no", "required_code": false },
       { "key": "env_file", "description_key": "desc_env_file", "example": "env.example", "value_key": "val_path", "required_key": "req_no", "required_code": false },
       { "key": "path_rule", "description_key": "desc_path_rule", "example": "PathPrefix(`/api`)", "value_key": "val_string", "required_key": "req_exposed", "required_code": true },
@@ -86,8 +87,11 @@
         "fibe.gg/start_command": {
           "$ref": "#/$defs/optionalString"
         },
-        "fibe.gg/expose": {
-          "$ref": "#/$defs/exposeLabel"
+        "fibe.gg/port": {
+          "$ref": "#/$defs/portLabel"
+        },
+        "fibe.gg/visibility": {
+          "$ref": "#/$defs/visibilityLabel"
         },
         "fibe.gg/production": {
           "$ref": "#/$defs/booleanLabel"
@@ -157,7 +161,8 @@
             "fibe.gg/dockerfile",
             "fibe.gg/env_file",
             "fibe.gg/start_command",
-            "fibe.gg/expose",
+            "fibe.gg/port",
+            "fibe.gg/visibility",
             "fibe.gg/production",
             "fibe.gg/zerodowntime",
             "fibe.gg/branch",
@@ -194,7 +199,10 @@
           "pattern": "^fibe\\.gg/(?:job_watch|production|zerodowntime)(?:=(?:|true|false))?$"
         },
         {
-          "pattern": "^fibe\\.gg/expose(?:=(?:|(?:(?:internal|external):)?[0-9]+))?$"
+          "pattern": "^fibe\\.gg/port(?:=(?:|[0-9]+))?$"
+        },
+        {
+          "pattern": "^fibe\\.gg/visibility(?:=(?:|internal|external))?$"
         },
         {
           "pattern": "^fibe\\.gg/subdomain(?:=(?:|@|[a-z0-9](?:[a-z0-9-]*[a-z0-9])?))?$"
@@ -224,7 +232,7 @@
     },
     "templatedFibeLabelString": {
       "type": "string",
-      "pattern": "^fibe\\.gg/(?:repo_url|source_mount|job_watch|dockerfile|env_file|start_command|expose|production|zerodowntime|branch|subdomain|path_rule|build_target|build_args|healthcheck_path|healthcheck_interval|healthcheck_timeout|healthcheck_retries|healthcheck_start_period)(?:=[^\\r\\n]*\\$\\$var__[A-Za-z0-9_]+[^\\r\\n]*)$"
+      "pattern": "^fibe\\.gg/(?:repo_url|source_mount|job_watch|dockerfile|env_file|start_command|port|visibility|production|zerodowntime|branch|subdomain|path_rule|build_target|build_args|healthcheck_path|healthcheck_interval|healthcheck_timeout|healthcheck_retries|healthcheck_start_period)(?:=[^\\r\\n]*\\$\\$var__[A-Za-z0-9_]+[^\\r\\n]*)$"
     },
     "templatedString": {
       "type": "string",
@@ -272,7 +280,7 @@
         }
       ]
     },
-    "exposeLabel": {
+    "portLabel": {
       "anyOf": [
         {
           "type": "integer",
@@ -284,7 +292,18 @@
         },
         {
           "type": "string",
-          "pattern": "^(?:|(?:(?:internal|external):)?[0-9]+)$"
+          "pattern": "^(?:|[0-9]+)$"
+        }
+      ]
+    },
+    "visibilityLabel": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/templatedString"
+        },
+        {
+          "type": "string",
+          "pattern": "^(?:|internal|external)$"
         }
       ]
     },

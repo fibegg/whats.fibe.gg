@@ -4,7 +4,7 @@ description: When you bind a variable to a location with path or paths, the loca
 slug: /authoring/variable-placement
 sidebar_position: 6
 image: /img/og/authoring-variable-placement.png
-keywords: [path, paths, YAML path, dotted notation, array index, fibe.gg/expose]
+keywords: [path, paths, YAML path, dotted notation, array index, fibe.gg/port]
 ---
 
 When you bind a variable to a location with `path:` or `paths:`, the location is a dotted reference into the template body.
@@ -14,14 +14,14 @@ When you bind a variable to a location with `path:` or `paths:`, the location is
 ```text
 services.web.environment.RAILS_ENV
 services.web.deploy.replicas
-services.web.labels.fibe.gg/expose
+services.web.labels.fibe.gg/port
 services.web.labels.fibe.gg/subdomain
 x-fibe.gg.metadata.description
 services.web.environment[0]
 services.web.command[2]
 ```
 
-Square brackets index into arrays. Dotted keys like `fibe.gg/expose` are matched as **single segments** under `labels:` even though they contain dots — Fibe knows the difference.
+Square brackets index into arrays. Dotted keys like `fibe.gg/port` are matched as **single segments** under `labels:` even though they contain dots — Fibe knows the difference.
 
 ## Same value, many destinations
 

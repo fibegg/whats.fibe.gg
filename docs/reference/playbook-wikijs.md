@@ -49,7 +49,7 @@ volumes:
 
 ## Conversion steps
 
-1. **`wiki` is the user-facing service** — public HTTP. Replace `ports: ["8080:3000"]` with `fibe.gg/expose: external:3000` (container port, not host).
+1. **`wiki` is the user-facing service** — public HTTP. Replace `ports: ["8080:3000"]` with `fibe.gg/port: 3000` + `fibe.gg/visibility: external` (container port, not host).
 2. **`db` is internal-only** — remove `ports:` if any; talk via service-name DNS (`db:5432`).
 3. **Hardcoded `wikijsrocks` password is unsafe** — convert to a `random: true` variable.
 4. **`DB_NAME=wiki` and other constants** — keep hardcoded.
@@ -94,7 +94,8 @@ services:
       DB_PASS: placeholder                  # overwritten by path binding
     restart: unless-stopped
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
 
 volumes:
@@ -125,7 +126,7 @@ x-fibe.gg:
 
 | Before | After | Why |
 |---|---|---|
-| `ports: ["8080:3000"]` on `wiki` | `fibe.gg/expose: external:3000` | Fibe routes via Traefik on subdomain, not host port |
+| `ports: ["8080:3000"]` on `wiki` | `fibe.gg/port: 3000` + `fibe.gg/visibility: external` | Fibe routes via Traefik on subdomain, not host port |
 | `POSTGRES_PASSWORD: wikijsrocks` | `POSTGRES_PASSWORD: placeholder` + `path` binding | Generated per-launch random secret |
 | `DB_PASS: wikijsrocks` | `DB_PASS: placeholder` + `path` binding | Same random as DB password |
 | `depends_on: - db` (short form) | `depends_on: db: { condition: service_healthy }` + `healthcheck:` on db | App waits until DB accepts connections |
@@ -145,7 +146,8 @@ services:
     deploy:
       replicas: 2
     labels:
-      fibe.gg/expose: external:3000
+      fibe.gg/port: 3000
+      fibe.gg/visibility: external
       fibe.gg/subdomain: $$var__SUBDOMAIN
       fibe.gg/zerodowntime: "true"
       fibe.gg/healthcheck_path: /healthz
